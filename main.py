@@ -6,6 +6,18 @@ from vk_class import VkUser
 from vk_bot import VkBot
 
 
+def get_countries(need_all=1):
+    country_list = []
+    response = vk.database.getCountries(need_all=need_all)
+    for value in response['items']:
+        country_dict = {
+            value['title']: value['id']
+        }
+        country_list.append(country_dict)
+    # pprint(country_list)
+    return country_list
+
+
 if __name__ == '__main__':
 
     with open('vk_token_personal.txt', 'r', encoding='utf-8') as file_obj:
@@ -31,22 +43,10 @@ if __name__ == '__main__':
     vk = vk_session.get_api()
 
 
-    def get_countries(need_all=1):
-        country_list = []
-        response = vk.database.getCountries(need_all=need_all)
-        for value in response['items']:
-            country_dict = {
-                value['title']: value['id']
-            }
-            country_list.append(country_dict)
-        # pprint(country_list)
-        return country_list
+    country = get_countries()
 
-
-    # country = get_countries()
-    #
-    # with open('countries.json', 'w', encoding='utf-8') as file_obj:
-    #     json.dump(country, file_obj, ensure_ascii=False, indent=4)
+    with open('countries.json', 'w', encoding='utf-8') as file_obj:
+        json.dump(country, file_obj, ensure_ascii=False, indent=4)
 
 
     for event in bot.longpoll_listen():

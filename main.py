@@ -65,24 +65,43 @@ if __name__ == '__main__':
 
                 elif request == "Да":
                     bot.write_msg(event.user_id, "Возраст (от):")
-                elif request == "18" :
-                    vk_client.age_from = "18"
-                    bot.write_msg(event.user_id, "Возраст (до):")
+                elif request == "25":
+                    vk_client.age_from = int(request)
+                    if vk_client.age_from >= 18 and vk_client.age_from <= 50:
+                        bot.write_msg(event.user_id, "Возраст (до):")
+                    else:
+                        bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
 
                 elif request == "100":
-                    vk_client.age_do = "100"
-                    bot.write_msg(event.user_id, "Пол: \n0 - любой,\n"
-                                                 "1 - женский,\n"
-                                                 "2 - мужской\n")
+                    vk_client.age_do = int(request)
+                    if vk_client.age_do >= 18 and vk_client.age_do <= 50:
+                        bot.write_msg(event.user_id, "Пол: \n0 - любой,\n"
+                                                     "1 - женский,\n"
+                                                     "2 - мужской\n")
+                    else:
+                        bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
+
                 elif request == "0":
-                    vk_client.sex = "0"
+                    vk_client.sex = int(request)
                 elif request == "1":
-                    vk_client.sex = "1"
+                    vk_client.sex = int(request)
                 elif request == "2" and vk_client.status is None:
-                    vk_client.sex = "2"
+                    vk_client.sex = int(request)
+                    bot.write_msg(event.user_id, "Введите название страны:")
+
+                elif request == "Беларусь":
+                    with open('countries.json', 'r', encoding='utf-8') as file_obj:
+                        data_countries = json.load(file_obj)
+                    # pprint(data_countries)
+
+                    for data in data_countries:
+                        for key, value in data.items():
+                            if request in key:
+                                vk_client.country_id = value
                     bot.write_msg(event.user_id, "Введите название города:")
 
-                elif request == "Москва":
+
+                elif request == "Минск":
                     vk_client.hometown = request
                     bot.write_msg(event.user_id, "Семейное положение:\n"
                                                  "1 — не женат (не замужем),\n"
@@ -99,21 +118,16 @@ if __name__ == '__main__':
                     bot.write_msg(event.user_id, "Введите количество запрашиваемых пользователей:\n")
                 elif request == "5":
                     vk_client.count = "5"
-                    response = vk_client.users_search(vk_client.age_from, vk_client.age_do, vk_client.sex, vk_client.hometown, vk_client.status, vk_client.count)
-
+                    response = vk_client.users_search(vk_client.age_from, vk_client.age_do, vk_client.sex, vk_client.country_id, vk_client.hometown, vk_client.status, vk_client.count)
+                    pprint(response)
                     for value in response:
                         owner_id = vk_client.users_get(value['id'])
-
                         for id in owner_id:
-                            photo_info = vk_client.photos_get(id['id'])
-
-                        bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
-                                                     f"Имя: {value['first_name']}\n"
-                                                     f"Профиль: {url+str(value['id'])}\n"
-                                                     f"Фото данного пользователя:")
-
-                # elif request == 'get countries':
-                #     bot.write_msg(event.user_id, f"{get_countries()}")
+                            # photo_info = vk_client.photos_get(id['id'])
+                            bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
+                                                         f"Имя: {value['first_name']}\n"
+                                                         f"Профиль: {url+str(value['id'])}\n"
+                                                         f"Фото данного пользователя:")
 
 
                 elif request == "Пока":

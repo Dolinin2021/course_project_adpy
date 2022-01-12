@@ -11,12 +11,11 @@ class VkUser():
         self._sex = None
         self._status = None
         self._relation = None
+        self._country_id = None
         self._hometown = None
         self._age_from = None
         self._age_do = None
         self._count = None
-        self._country_id = None
-        self._city = None
         self._user_ids = None
         vk_session = vk_api.VkApi(login=self.login, token=self.token)
         try:
@@ -51,20 +50,12 @@ class VkUser():
         self._sex = value
 
     @property
-    def country(self):
+    def country_id(self):
         return self._country_id
 
-    @country.setter
-    def country(self, value):
+    @country_id.setter
+    def country_id(self, value):
         self._country_id = value
-
-    @property
-    def city(self):
-        return self._city
-
-    @city.setter
-    def city(self, value):
-        self._city = value
 
     @property
     def hometown(self):
@@ -99,41 +90,28 @@ class VkUser():
         self._user_ids = value
 
     def photos_get(self, owner_id, album_id='profile', rev=0, extended=1,  count=10):
-
         photos_list = []
-
         response = self.vk.photos.get(owner_id=owner_id, album_id=album_id, rev=rev,  extended=extended, count=count)
-
         for value in response['items']:
-
             photos_dict = {
                 'comments_count': f"{value['comments']['count']}",
                 'likes_count': f"{value['likes']['count']}",
                 'url': value['sizes'][-1]['url']
             }
-
             photos_list.append(photos_dict)
-
         sorted_list = sorted(photos_list, key=itemgetter('comments_count', 'likes_count'), reverse=True)
-
         return sorted_list[:3]
 
-    def users_search(self, age_from=age_from, age_do=age_do, sex=sex, hometown=hometown, status=status, count=count):
-
+    def users_search(self, age_from=age_from, age_do=age_do, sex=sex, country_id=country_id, hometown=hometown, status=status, count=count):
         response = self.vk.users.search(age_from=age_from, age_do=age_do,
-                                        sex=sex, hometown=hometown, status=status,
+                                        sex=sex, country=country_id, hometown=hometown, status=status,
                                         count=count)
-
         return response['items']
 
     def users_get(self, user_ids=user_ids):
-
         res_user_list = []
-
         response = self.vk.users.get(user_ids=user_ids)
-
         # pprint(response)
-
         for value in response:
             user_dict = {
                 'id': value['id'],
@@ -143,5 +121,4 @@ class VkUser():
                 'can_access_closed': value['can_access_closed']
             }
             res_user_list.append(user_dict)
-
         return res_user_list

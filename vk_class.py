@@ -15,7 +15,8 @@ class VkUser():
         self._age_from = None
         self._age_do = None
         self._count = None
-        # self._country_id = None
+        self._country_id = None
+        self._city = None
         self._user_ids = None
         vk_session = vk_api.VkApi(login=self.login, token=self.token)
         try:
@@ -24,14 +25,6 @@ class VkUser():
             print(error_msg)
             return
         self.vk = vk_session.get_api()
-
-    # @property
-    # def text(self):
-    #     return self._text
-    #
-    # @text.setter
-    # def text(self, value):
-    #     self._text = value
 
     @property
     def age_from(self):
@@ -57,13 +50,21 @@ class VkUser():
     def sex(self, value):
         self._sex = value
 
-    # @property
-    # def country(self):
-    #     return self._country_id
-    #
-    # @country.setter
-    # def country(self, value):
-    #     self._country_id = value
+    @property
+    def country(self):
+        return self._country_id
+
+    @country.setter
+    def country(self, value):
+        self._country_id = value
+
+    @property
+    def city(self):
+        return self._city
+
+    @city.setter
+    def city(self, value):
+        self._city = value
 
     @property
     def hometown(self):
@@ -129,34 +130,18 @@ class VkUser():
 
         res_user_list = []
 
-        response = self.vk.users.get(user_ids=user_ids, fields='sex,country,city,relation')
+        response = self.vk.users.get(user_ids=user_ids)
 
         # pprint(response)
 
-        try:
-            for value in response:
-                user_dict = {
-                    'id': value['id'],
-                    'last_name': value['last_name'],
-                    'first_name': value['first_name'],
-                    'is_closed': value['is_closed'],
-                    'can_access_closed': value['can_access_closed'],
-                    'sex': value['sex'],
-                    'country': value['country']['title'],
-                    'city': value['city']['title'],
-                    'relation': value['relation']
-                }
-                res_user_list.append(user_dict)
-
-        except KeyError:
-            for value in response:
-                user_dict = {
-                    'id': value['id'],
-                    'last_name': value['last_name'],
-                    'first_name': value['first_name'],
-                    'is_closed': value['is_closed'],
-                    'can_access_closed': value['can_access_closed'],
-                }
-                res_user_list.append(user_dict)
+        for value in response:
+            user_dict = {
+                'id': value['id'],
+                'last_name': value['last_name'],
+                'first_name': value['first_name'],
+                'is_closed': value['is_closed'],
+                'can_access_closed': value['can_access_closed']
+            }
+            res_user_list.append(user_dict)
 
         return res_user_list

@@ -1,5 +1,7 @@
-from pprint import pprint
+import json
+import vk_api
 from vk_api.longpoll import VkEventType
+from pprint import pprint
 from vk_class import VkUser
 from vk_bot import VkBot
 
@@ -15,9 +17,37 @@ if __name__ == '__main__':
     with open('vk_login.txt', 'r', encoding='utf-8') as file_obj:
         login = file_obj.read().strip()
 
+
     vk_client = VkUser(login, vk_token_personal)
 
     bot = VkBot(login, vk_token_community)
+
+
+    vk_session = vk_api.VkApi(login=login, token=vk_token_personal)
+    try:
+        vk_session.auth(token_only=True)
+    except vk_api.AuthError as error_msg:
+        print(error_msg)
+    vk = vk_session.get_api()
+
+
+    def get_countries(need_all=1):
+        country_list = []
+        response = vk.database.getCountries(need_all=need_all)
+        for value in response['items']:
+            country_dict = {
+                value['title']: value['id']
+            }
+            country_list.append(country_dict)
+        # pprint(country_list)
+        return country_list
+
+
+    # country = get_countries()
+    #
+    # with open('countries.json', 'w', encoding='utf-8') as file_obj:
+    #     json.dump(country, file_obj, ensure_ascii=False, indent=4)
+
 
     for event in bot.longpoll_listen():
 
@@ -53,7 +83,7 @@ if __name__ == '__main__':
                     bot.write_msg(event.user_id, "Введите название города:")
 
                 elif request == "Москва":
-                    vk_client.hometown = "Москва"
+                    vk_client.hometown = request
                     bot.write_msg(event.user_id, "Семейное положение:\n"
                                                  "1 — не женат (не замужем),\n"
                                                  "2 — встречается,\n"
@@ -81,6 +111,9 @@ if __name__ == '__main__':
                                                      f"Имя: {value['first_name']}\n"
                                                      f"Профиль: {url+str(value['id'])}\n"
                                                      f"Фото данного пользователя:")
+
+                # elif request == 'get countries':
+                #     bot.write_msg(event.user_id, f"{get_countries()}")
 
 
                 elif request == "Пока":

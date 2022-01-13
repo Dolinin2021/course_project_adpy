@@ -109,7 +109,8 @@ if __name__ == '__main__':
                             vk_client.age_do = age_int_list[1]
                             print(vk_client.age_from)
                             print(vk_client.age_do)
-                            bot.write_msg(event.user_id, "Возраст задан корректно, теперь задайте параметр пола.")
+                            bot.write_msg(event.user_id, "Возраст задан корректно, теперь задайте параметр пола. "
+                                                         "Шаблон: Установить пол <число>")
 
                     sex_list = re.search(pattern_sex, request, re.I)
                     if sex_list:
@@ -124,13 +125,13 @@ if __name__ == '__main__':
                             bot.write_msg(event.user_id, "Пол задан корректно, теперь задайте параметр страны.")
 
 
-                elif request == "0":
-                    vk_client.sex = int(request)
-                elif request == "1":
-                    vk_client.sex = int(request)
-                elif request == "2" and vk_client.status is None:
-                    vk_client.sex = int(request)
-                    bot.write_msg(event.user_id, "Введите название страны:")
+                # elif request == "0":
+                #     vk_client.sex = int(request)
+                # elif request == "1":
+                #     vk_client.sex = int(request)
+                # elif request == "2" and vk_client.status is None:
+                #     vk_client.sex = int(request)
+                #     bot.write_msg(event.user_id, "Введите название страны:")
 
                 elif request == "Беларусь":
                     with open('countries.json', 'r', encoding='utf-8') as file_obj:

@@ -122,3 +122,23 @@ class VkUser():
             }
             res_user_list.append(user_dict)
         return res_user_list
+
+    @staticmethod
+    def get_countries(login, token, need_all=1):
+
+        country_list = []
+
+        vk_session = vk_api.VkApi(login=login, token=token)
+        try:
+            vk_session.auth(token_only=True)
+        except vk_api.AuthError as error_msg:
+            print(error_msg)
+        vk = vk_session.get_api()
+
+        response = vk.database.getCountries(need_all=need_all)
+        for value in response['items']:
+            country_dict = {
+                value['title']: value['id']
+            }
+            country_list.append(country_dict)
+        return country_list

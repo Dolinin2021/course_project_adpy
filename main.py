@@ -7,17 +7,6 @@ from vk_class import VkUser
 from vk_bot import VkBot
 
 
-def get_countries(need_all=1):
-    country_list = []
-    response = vk.database.getCountries(need_all=need_all)
-    for value in response['items']:
-        country_dict = {
-            value['title']: value['id']
-        }
-        country_list.append(country_dict)
-    return country_list
-
-
 HELP = """
 Для того, чтобы найти человека через наш сервис, 
 Вам необходимо ввести следующие команды:
@@ -63,16 +52,7 @@ if __name__ == '__main__':
 
     bot = VkBot(login, vk_token_community)
 
-
-    vk_session = vk_api.VkApi(login=login, token=vk_token_personal)
-    try:
-        vk_session.auth(token_only=True)
-    except vk_api.AuthError as error_msg:
-        print(error_msg)
-    vk = vk_session.get_api()
-
-
-    country = get_countries()
+    country = VkUser.get_countries(login, vk_token_personal)
 
     with open('countries.json', 'w', encoding='utf-8') as file_obj:
         json.dump(country, file_obj, ensure_ascii=False, indent=4)
@@ -137,7 +117,7 @@ if __name__ == '__main__':
                     country_list = re.search(pattern_country, request, re.I)
                     if country_list:
                         pattern_name_country = r"[^Страна:\s]\D+\S"
-                        country_name = re.search(pattern_name_country, country_list[0])
+                        country_name = re.search(pattern_name_country, country_list[0], re.I)
                         with open('countries.json', 'r', encoding='utf-8') as file_obj:
                             data_countries = json.load(file_obj)
 
@@ -153,7 +133,7 @@ if __name__ == '__main__':
                     hometown_list = re.search(pattern_hometown, request, re.I)
                     if hometown_list:
                         pattern_name_hometown = r"[^Город:\s]\D+\S"
-                        hometown_name = re.search(pattern_name_hometown, hometown_list[0])
+                        hometown_name = re.search(pattern_name_hometown, hometown_list[0], re.I)
                         vk_client.hometown = hometown_name[0]
                         # print(vk_client.hometown)
                         bot.write_msg(event.user_id, "Город задан верно, теперь введите семейное положение. \n"
@@ -199,11 +179,12 @@ if __name__ == '__main__':
                                 for id in owner_id:
                                     try:
                                         photo_info = vk_client.photos_get(id['id'])
+                                        # pprint(photo_info)
                                         bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
                                                                      f"Имя: {value['first_name']}\n"
                                                                      f"Профиль: {url+str(value['id'])}\n"
-                                                                     f"Фото данного пользователя:")
+                                                                     f"Фото данного пользователя: {[item['url'] for item in photo_info]}")
                                     except vk_api.exceptions.ApiError as error_msg:
                                         # print(error_msg)
                                         bot.write_msg(event.user_id, f"Возникла ошибка API VK. \n"
-                                                                    f"Код ошибки и её описание: \n{error_msg}")
+                                                                     f"Код ошибки и её описание: \n{error_msg}")

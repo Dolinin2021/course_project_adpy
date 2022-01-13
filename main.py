@@ -15,14 +15,26 @@ def get_countries(need_all=1):
             value['title']: value['id']
         }
         country_list.append(country_dict)
-    # pprint(country_list)
     return country_list
 
 
 HELP = """
 Для того, чтобы найти человека через наш сервис, Вам необходимо ввести команды в следующем шаблоне и последовательности:
-1) Возраст от <число> до <число> лет - команда для задания параметров возраста,
-2) Установить пол <число> - команда для задания параметра пола """
+1) Возраст от <число> до <число> лет - команда для ввода возраста,
+2) Пол: <число> - команда для ввода пола, 
+3) Страна: <Название страны> - команда для ввода страны,
+4) Город: <Название города> - команда для ввода города,
+5) Семейное положение: <число> - команда для ввода семейного положения, где <число>:
+1 — не женат (не замужем),
+2 — встречается,
+3 — помолвлен(-а),
+4 — женат (замужем),
+5 — всё сложно,
+6 — в активном поиске,
+7 — влюблен(-а),
+8 — в гражданском браке
+6) Количество запрашиваемых пользователей: <число> - команда для ввода количества пользователей.
+"""
 
 
 if __name__ == '__main__':
@@ -55,10 +67,14 @@ if __name__ == '__main__':
     with open('countries.json', 'w', encoding='utf-8') as file_obj:
         json.dump(country, file_obj, ensure_ascii=False, indent=4)
 
-    pattern_age = "Возраст от\s*\d*\s*до\s*\d*\s*лет"
-    pattern_sex = "Установить пол\s*\d{1}"
+    pattern_age = r"Возраст от\s*\d*\s*до\s*\d*\s*лет"
+    pattern_sex = r"Пол:\s*\d{1}"
 
+    pattern_country = r"Страна:\s\D+\S"
+    pattern_hometown = r"Город:\s\D+\S"
 
+    pattern_status = r"Семейное положение:\s*\d{1}"
+    pattern_count_users = r"Количество запрашиваемых пользователей:\s*\d+"
 
     for event in bot.longpoll_listen():
 
@@ -77,105 +93,107 @@ if __name__ == '__main__':
                 elif request == "Да":
                     bot.write_msg(event.user_id, HELP)
 
-                # elif request == "25":
-                #     vk_client.age_from = int(request)
-                #     if vk_client.age_from >= 18 and vk_client.age_from <= 50:
-                #         bot.write_msg(event.user_id, "Возраст (до):")
-                #     else:
-                #         bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
-
-                # elif request == "100":
-                #     vk_client.age_do = int(request)
-                #     if vk_client.age_do >= 18 and vk_client.age_do <= 50:
-                #         bot.write_msg(event.user_id, "Пол: \n0 - любой,\n"
-                #                                      "1 - женский,\n"
-                #                                      "2 - мужской\n")
-                #     else:
-                #         bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
 
                 # задание параметров через регулярные выражения
                 elif request == event.text:
-                    # print(request)
 
                     age_list = re.search(pattern_age, request, re.I)
                     if age_list:
-                        # print(age_list[0])
-                        # bot.write_msg(event.user_id, age_list[0])
                         pattern_int_age = r"[\d]+[\d]+"
-                        age_int_list = re.findall(pattern_int_age, request)
+                        age_int_list = re.findall(pattern_int_age, age_list[0])
                         if age_int_list:
-                            # print(age_int_list[0:2])
                             vk_client.age_from = age_int_list[0]
                             vk_client.age_do = age_int_list[1]
                             print(vk_client.age_from)
                             print(vk_client.age_do)
-                            bot.write_msg(event.user_id, "Возраст задан корректно, теперь задайте параметр пола. "
-                                                         "Шаблон: Установить пол <число>")
+                            bot.write_msg(event.user_id, "Возраст задан корректно, теперь введите пол. \n"
+                                                         "Шаблон: Пол: <число>")
+
 
                     sex_list = re.search(pattern_sex, request, re.I)
                     if sex_list:
-                        # print(sex_list[0])
-                        # bot.write_msg(event.user_id, sex_list[0])
                         pattern_int_sex = r"\d{1}"
-                        sex_int_list = re.search(pattern_int_sex, request)
+                        sex_int_list = re.search(pattern_int_sex, sex_list[0])
                         if sex_int_list:
-                            # print(sex_int_list[0])
-                            vk_client.sex = sex_int_list
+                            vk_client.sex = sex_int_list[0]
                             print(vk_client.sex)
-                            bot.write_msg(event.user_id, "Пол задан корректно, теперь задайте параметр страны.")
+                            bot.write_msg(event.user_id, "Пол задан корректно, теперь введите название страны. \n"
+                                                         "Шаблон: Страна: <название страны>")
 
 
-                # elif request == "0":
-                #     vk_client.sex = int(request)
-                # elif request == "1":
-                #     vk_client.sex = int(request)
-                # elif request == "2" and vk_client.status is None:
-                #     vk_client.sex = int(request)
-                #     bot.write_msg(event.user_id, "Введите название страны:")
+                    country_list = re.search(pattern_country, request, re.I)
+                    if country_list:
+                        pattern_name_country = r"[^Страна:\s]\D+\S"
+                        country_name = re.search(pattern_name_country, country_list[0])
+                        with open('countries.json', 'r', encoding='utf-8') as file_obj:
+                            data_countries = json.load(file_obj)
 
-                elif request == "Беларусь":
-                    with open('countries.json', 'r', encoding='utf-8') as file_obj:
-                        data_countries = json.load(file_obj)
-                    # pprint(data_countries)
-
-                    for data in data_countries:
-                        for key, value in data.items():
-                            if request in key:
-                                vk_client.country_id = value
-                    bot.write_msg(event.user_id, "Введите название города:")
+                        for data in data_countries:
+                            for key, value in data.items():
+                                if country_name[0] in key:
+                                    vk_client.country_id = value
+                                    print(vk_client.country_id)
+                                    bot.write_msg(event.user_id, "Страна задана верно. теперь введите название города. \n"
+                                                                 "Шаблон: Город: <название города>")
 
 
-                elif request == "Минск":
-                    vk_client.hometown = request
-                    bot.write_msg(event.user_id, "Семейное положение:\n"
-                                                 "1 — не женат (не замужем),\n"
-                                                 "2 — встречается,\n"
-                                                 "3 — помолвлен(-а),\n"
-                                                 "4 — женат (замужем),\n"
-                                                 "5 — всё сложно,\n"
-                                                 "6 — в активном поиске,\n"
-                                                 "7 — влюблен(-а),\n"
-                                                 "8 — в гражданском браке\n")
+                    hometown_list = re.search(pattern_hometown, request, re.I)
+                    if hometown_list:
+                        pattern_name_hometown = r"[^Город:\s]\D+\S"
+                        hometown_name = re.search(pattern_name_hometown, hometown_list[0])
+                        vk_client.hometown = hometown_name[0]
+                        print(vk_client.hometown)
+                        bot.write_msg(event.user_id, "Город задан верно, теперь введите семейное положение. \n"
+                                                     "Шаблон: Семейное положение: <число>, где <число>: \n"
+                                                     "1 — не женат (не замужем),\n"
+                                                     "2 — встречается,\n"
+                                                     "3 — помолвлен(-а),\n"
+                                                     "4 — женат (замужем),\n"
+                                                     "5 — всё сложно,\n"
+                                                     "6 — в активном поиске,\n"
+                                                     "7 — влюблен(-а),\n"
+                                                     "8 — в гражданском браке")
 
-                elif request == "не женат":
-                    vk_client.status = "1"
-                    bot.write_msg(event.user_id, "Введите количество запрашиваемых пользователей:\n")
-                elif request == "5":
-                    vk_client.count = "5"
-                    response = vk_client.users_search(vk_client.age_from, vk_client.age_do, vk_client.sex, vk_client.country_id, vk_client.hometown, vk_client.status, vk_client.count)
-                    pprint(response)
-                    for value in response:
-                        owner_id = vk_client.users_get(value['id'])
-                        for id in owner_id:
-                            # photo_info = vk_client.photos_get(id['id'])
-                            bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
-                                                         f"Имя: {value['first_name']}\n"
-                                                         f"Профиль: {url+str(value['id'])}\n"
-                                                         f"Фото данного пользователя:")
+                    status_list = re.search(pattern_status, request, re.I)
+                    if status_list:
+                        pattern_int_status = r"\d{1}"
+                        status_int_list = re.search(pattern_int_status, status_list[0])
+                        if status_int_list:
+                            vk_client.status = status_int_list[0]
+                            print(vk_client.status)
+                            bot.write_msg(event.user_id, "Семейное положение задано верно, \n"
+                                                         "теперь введите количество запрашиваемых пользователей. \n"
+                                                         "Шаблон: Количество запрашиваемых пользователей: <число>")
+
+                    count_list = re.search(pattern_count_users, request, re.I)
+                    if count_list:
+                        pattern_int_count = r"\d+"
+                        count_int_list = re.search(pattern_int_count, count_list[0])
+                        if count_int_list:
+                            vk_client.count = count_int_list[0]
+                            print(vk_client.count)
+                            bot.write_msg(event.user_id, "Количество пользователей задано верно. \n"
+                                                         "Результат:")
+
+                            
+                # response = vk_client.users_search(vk_client.age_from, vk_client.age_do, vk_client.sex,
+                #                                   vk_client.country_id, vk_client.hometown, vk_client.status, vk_client.count)
+                # pprint(response)
 
 
-                elif request == "Пока":
-                    bot.write_msg(event.user_id, "До встречи!")
-                else:
-                    bot.write_msg(event.user_id, "Не поняла вашего ответа...\n "
-                                                 "Давайте начнём сначала!")
+                #     for value in response:
+                #         owner_id = vk_client.users_get(value['id'])
+                #         for id in owner_id:
+                #             # photo_info = vk_client.photos_get(id['id'])
+                #             bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
+                #                                          f"Имя: {value['first_name']}\n"
+                #                                          f"Профиль: {url+str(value['id'])}\n"
+                #                                          f"Фото данного пользователя:")
+
+
+                # elif request == "Пока":
+                #     bot.write_msg(event.user_id, "До встречи!")
+
+                # else:
+                #     bot.write_msg(event.user_id, "Не поняла вашего ответа...\n "
+                #                                  "Давайте начнём сначала!")

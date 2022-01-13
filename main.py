@@ -1,3 +1,4 @@
+import re
 import json
 import vk_api
 from vk_api.longpoll import VkEventType
@@ -16,6 +17,12 @@ def get_countries(need_all=1):
         country_list.append(country_dict)
     # pprint(country_list)
     return country_list
+
+
+HELP = """
+Для того, чтобы найти человека через наш сервис, Вам необходимо ввести команды в следующем шаблоне и последовательности:
+1) Возраст от <число> до <число> лет - команда для задания параметров возраста,
+2) Установить пол <число> - команда для задания параметра пола """
 
 
 if __name__ == '__main__':
@@ -48,6 +55,10 @@ if __name__ == '__main__':
     with open('countries.json', 'w', encoding='utf-8') as file_obj:
         json.dump(country, file_obj, ensure_ascii=False, indent=4)
 
+    pattern_age = "Возраст от\s*\d*\s*до\s*\d*\s*лет"
+    pattern_sex = "Установить пол\s*\d{1}"
+
+
 
     for event in bot.longpoll_listen():
 
@@ -58,28 +69,60 @@ if __name__ == '__main__':
             if event.to_me:
                 request = event.text
 
-                if request == "Привет":
-                    search = vk_client.users_get(event.user_id)
-                    for name in search:
-                        bot.write_msg(event.user_id, f"Привет, {name['first_name']}! Хочешь познакомиться?")
+                if request == "Запуск":
+                    bot.write_msg(event.user_id, f"Вас приветствует чат-бот VKinder! "
+                                                 f"Желаете воспользоваться нашим сервисом для знакомств? "
+                                                 f"Введите слово Да, чтобы продолжить... ")
 
                 elif request == "Да":
-                    bot.write_msg(event.user_id, "Возраст (от):")
-                elif request == "25":
-                    vk_client.age_from = int(request)
-                    if vk_client.age_from >= 18 and vk_client.age_from <= 50:
-                        bot.write_msg(event.user_id, "Возраст (до):")
-                    else:
-                        bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
+                    bot.write_msg(event.user_id, HELP)
 
-                elif request == "100":
-                    vk_client.age_do = int(request)
-                    if vk_client.age_do >= 18 and vk_client.age_do <= 50:
-                        bot.write_msg(event.user_id, "Пол: \n0 - любой,\n"
-                                                     "1 - женский,\n"
-                                                     "2 - мужской\n")
-                    else:
-                        bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
+                # elif request == "25":
+                #     vk_client.age_from = int(request)
+                #     if vk_client.age_from >= 18 and vk_client.age_from <= 50:
+                #         bot.write_msg(event.user_id, "Возраст (до):")
+                #     else:
+                #         bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
+
+                # elif request == "100":
+                #     vk_client.age_do = int(request)
+                #     if vk_client.age_do >= 18 and vk_client.age_do <= 50:
+                #         bot.write_msg(event.user_id, "Пол: \n0 - любой,\n"
+                #                                      "1 - женский,\n"
+                #                                      "2 - мужской\n")
+                #     else:
+                #         bot.write_msg(event.user_id, "Вы нарушили допустимый диапазон от 18 до 50 лет. Попробуйте ещё раз.")
+
+                # задание параметров через регулярные выражения
+                elif request == event.text:
+                    # print(request)
+
+                    age_list = re.search(pattern_age, request, re.I)
+                    if age_list:
+                        # print(age_list[0])
+                        # bot.write_msg(event.user_id, age_list[0])
+                        pattern_int_age = r"[\d]+[\d]+"
+                        age_int_list = re.findall(pattern_int_age, request)
+                        if age_int_list:
+                            # print(age_int_list[0:2])
+                            vk_client.age_from = age_int_list[0]
+                            vk_client.age_do = age_int_list[1]
+                            print(vk_client.age_from)
+                            print(vk_client.age_do)
+                            bot.write_msg(event.user_id, "Возраст задан корректно, теперь задайте параметр пола.")
+
+                    sex_list = re.search(pattern_sex, request, re.I)
+                    if sex_list:
+                        # print(sex_list[0])
+                        # bot.write_msg(event.user_id, sex_list[0])
+                        pattern_int_sex = r"\d{1}"
+                        sex_int_list = re.search(pattern_int_sex, request)
+                        if sex_int_list:
+                            # print(sex_int_list[0])
+                            vk_client.sex = sex_int_list
+                            print(vk_client.sex)
+                            bot.write_msg(event.user_id, "Пол задан корректно, теперь задайте параметр страны.")
+
 
                 elif request == "0":
                     vk_client.sex = int(request)

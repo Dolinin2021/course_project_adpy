@@ -92,8 +92,10 @@ class VkUser():
     def photos_get(self, owner_id, album_id='profile', rev=0, extended=1,  count=10):
         photos_list = []
         response = self.vk.photos.get(owner_id=owner_id, album_id=album_id, rev=rev,  extended=extended, count=count)
+        # pprint(response)
         for value in response['items']:
             photos_dict = {
+                'photo_id': f"{value['id']}",
                 'comments_count': f"{value['comments']['count']}",
                 'likes_count': f"{value['likes']['count']}",
                 'url': value['sizes'][-1]['url']
@@ -102,11 +104,13 @@ class VkUser():
         sorted_list = sorted(photos_list, key=itemgetter('comments_count', 'likes_count'), reverse=True)
         return sorted_list[:3]
 
-    def users_search(self, age_from=age_from, age_do=age_do, sex=sex, country_id=country_id, hometown=hometown, status=status, count=count):
+    def users_search(self, age_from=age_from, age_do=age_do, sex=sex, country_id=country_id,
+                     hometown=hometown, status=status, count=count):
         response = self.vk.users.search(age_from=age_from, age_do=age_do,
                                         sex=sex, country=country_id, hometown=hometown, status=status,
                                         count=count)
-        return response['items']
+        pprint(response)
+        return response
 
     def users_get(self, user_ids=user_ids):
         res_user_list = []

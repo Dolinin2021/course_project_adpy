@@ -100,7 +100,10 @@ if __name__ == '__main__':
                             # print(vk_client.age_from)
                             # print(vk_client.age_do)
                             bot.write_msg(event.user_id, "Возраст задан корректно, теперь введите пол. \n"
-                                                         "Шаблон: Пол: <число>")
+                                                         "Шаблон: Пол: <число>, где <число>: \n"
+                                                         "0 — любой пол, \n"
+                                                         "1 — женский пол, \n"
+                                                         "2 — мужской пол.")
 
 
                     sex_list = re.search(pattern_sex, request, re.I)
@@ -174,17 +177,25 @@ if __name__ == '__main__':
                                                               vk_client.country_id, vk_client.hometown, vk_client.status, vk_client.count)
                             # pprint(response)
 
+                            url_list = []
+
                             for value in response:
-                                owner_id = vk_client.users_get(value['id'])
-                                for id in owner_id:
-                                    try:
-                                        photo_info = vk_client.photos_get(id['id'])
-                                        # pprint(photo_info)
-                                        bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
-                                                                     f"Имя: {value['first_name']}\n"
-                                                                     f"Профиль: {url+str(value['id'])}\n"
-                                                                     f"Фото данного пользователя: {[item['url'] for item in photo_info]}")
-                                    except vk_api.exceptions.ApiError as error_msg:
-                                        # print(error_msg)
-                                        bot.write_msg(event.user_id, f"Возникла ошибка API VK. \n"
-                                                                     f"Код ошибки и её описание: \n{error_msg}")
+                                try:
+                                    photo_info = vk_client.photos_get(value['id'])
+                                    # pprint(photo_info)
+                                    for info in photo_info:
+                                        url_list.append(info['url'])
+
+                                    photos = ','.join(url_list)
+                                    pprint(url_list)
+                                    pprint(photos)
+
+                                    bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
+                                                                 f"Имя: {value['first_name']}\n"
+                                                                 f"Профиль: {url + str(value['id'])}\n",
+                                                  f"Фото: {photos}")
+                                except vk_api.exceptions.ApiError as error_msg:
+                                    # print(error_msg)
+                                    bot.write_msg(event.user_id, f"Возникла ошибка API VK. \n"
+                                                                 f"Код ошибки и её описание: \n{error_msg}")
+                                url_list.clear()

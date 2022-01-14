@@ -141,4 +141,5 @@ class VkUser():
                 value['title']: value['id']
             }
             country_list.append(country_dict)
+
         return country_list

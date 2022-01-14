@@ -17,4 +17,4 @@ class VkBot:
     def write_msg(self, user_id, message, photo=None):
         self.vk_session.method('messages.send',
                                {'user_id': user_id, 'message': message, 'random_id': randrange(10 ** 7),
-                                'attachment': photo})
+                                'attachment': photo,})

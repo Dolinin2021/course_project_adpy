@@ -143,6 +143,7 @@ class VkUser():
 
     @staticmethod
     def get_countries(login, token, need_all=1, count=1000):
+
         country_list = []
 
         vk_session = vk_api.VkApi(login=login, token=token)

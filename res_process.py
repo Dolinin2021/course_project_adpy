@@ -50,4 +50,4 @@ def response_processing(response, vk_class_obj, vk_bot_obj, user_id):
         except vk_api.exceptions.ApiError as error_msg:
                 # print(error_msg)
                 vk_bot_obj.write_msg(user_id, f"Возникла ошибка API VK. \n"
-                                             f"Код ошибки и её описание: \n{error_msg}")
+                                              f"Код ошибки и её описание: \n{error_msg}")

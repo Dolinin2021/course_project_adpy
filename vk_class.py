@@ -89,7 +89,21 @@ class VkUser():
     def user_ids(self, value):
         self._user_ids = value
 
-    def photos_get(self, owner_id, album_id='profile', rev=0, extended=1,  count=10):
+    def get_albums(self, owner_id):
+        albums_list = []
+        response = self.vk.photos.getAlbums(owner_id=owner_id)
+        for value in response['items']:
+            album_dict = {
+                'title': value['title'],
+                'user_id': value['owner_id'],
+                'id': value['id'],
+                'size': value['size'],
+                'description': value['description']
+            }
+            albums_list.append(album_dict)
+        return albums_list
+
+    def photos_get(self, owner_id, album_id, rev=0, extended=1,  count=10):
         photos_list = []
         response = self.vk.photos.get(owner_id=owner_id, album_id=album_id, rev=rev,  extended=extended, count=count)
         # pprint(response)
@@ -128,8 +142,7 @@ class VkUser():
         return res_user_list
 
     @staticmethod
-    def get_countries(login, token, need_all=1):
-
+    def get_countries(login, token, need_all=1, count=1000):
         country_list = []
 
         vk_session = vk_api.VkApi(login=login, token=token)
@@ -139,7 +152,7 @@ class VkUser():
             print(error_msg)
         vk = vk_session.get_api()
 
-        response = vk.database.getCountries(need_all=need_all)
+        response = vk.database.getCountries(need_all=need_all, count=count)
         for value in response['items']:
             country_dict = {
                 value['title']: value['id']

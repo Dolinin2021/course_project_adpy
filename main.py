@@ -179,28 +179,3 @@ if __name__ == '__main__':
                             # pprint(response)
 
                             result = response_processing(response, vk_client, bot, event.user_id)
-
-                            # photo_list = []
-                            #
-                            # for value in response:
-                            #     try:
-                            #         photo_info = vk_client.photos_get(value['id'])
-                            #         # pprint(photo_info)
-                            #         for info in photo_info:
-                            #             photo_list.append(f"photo{value['id']}_{info['photo_id']}")
-                            #
-                            #         photos = ','.join(photo_list)
-                            #         # pprint(photo_list)
-                            #         # pprint(photos)
-                            #
-                            #         bot.write_msg(event.user_id, f"Фамилия: {value['last_name']}\n"
-                            #                                      f"Имя: {value['first_name']}\n"
-                            #                                      f"Профиль: {url + str(value['id'])}\n",
-                            #                                      photos)
-                            #
-                            #         photo_list.clear()
-                            #
-                            #     except vk_api.exceptions.ApiError as error_msg:
-                            #         # print(error_msg)
-                            #         bot.write_msg(event.user_id, f"Возникла ошибка API VK. \n"
-                            #                                      f"Код ошибки и её описание: \n{error_msg}")

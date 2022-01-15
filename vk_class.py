@@ -109,8 +109,8 @@ class VkUser():
         response = self.vk.users.search(age_from=age_from, age_do=age_do,
                                         sex=sex, country=country_id, hometown=hometown, status=status,
                                         count=count)
-        pprint(response)
-        return response
+        # pprint(response)
+        return response['items']
 
     def users_get(self, user_ids=user_ids):
         res_user_list = []

@@ -127,19 +127,38 @@ class VkUser():
         return response['items']
 
     def users_get(self, user_ids=user_ids):
-        res_user_list = []
-        response = self.vk.users.get(user_ids=user_ids)
+        user_list = []
+        response = self.vk.users.get(user_ids=user_ids, fields='sex,country,city,relation')
         # pprint(response)
         for value in response:
+            # pprint(value)
             user_dict = {
                 'id': value['id'],
                 'last_name': value['last_name'],
                 'first_name': value['first_name'],
                 'is_closed': value['is_closed'],
-                'can_access_closed': value['can_access_closed']
+                'can_access_closed': value['can_access_closed'],
+                'sex': VkUser.value_getter(value, 'sex'),
+                'country': VkUser.value_getter(value, 'country'),
+                'city': VkUser.value_getter(value, 'city'),
+                'relation': VkUser.value_getter(value, 'relation')
             }
-            res_user_list.append(user_dict)
-        return res_user_list
+            user_list.append(user_dict)
+        return user_list
+
+    @staticmethod
+    def value_getter(collection, key):
+        value_first_key = collection.get(key, None)
+        if value_first_key is None:
+            return
+        try:
+            value_second_key = value_first_key.get('title', None)
+            if value_second_key is None:
+                return
+            elif value_second_key:
+                return value_second_key
+        except AttributeError:
+            return value_first_key
 
     @staticmethod
     def get_countries(login, token, need_all=1, count=1000):

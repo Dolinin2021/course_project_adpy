@@ -39,12 +39,12 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     pattern_id = r"Мой id:\s*\S*\s*"
     pattern_age = r"Возраст от\s*\d*\s*до\s*\d*\s*лет"
-    pattern_sex = r"Пол:\s*\d{1}"
+    pattern_sex = r"Пол:\s*\d+"
 
     pattern_country = r"Страна:\s\D+\S"
     pattern_hometown = r"Город:\s\D+\S"
 
-    pattern_status = r"Семейное положение:\s*\d{1}"
+    pattern_status = r"Семейное положение:\s*\d+"
     pattern_count_users = r"Количество запрашиваемых пользователей:\s*\d+"
 
     id_list = re.search(pattern_id, request, re.I)
@@ -105,7 +105,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             vk_bot_class_obj.write_msg(user_id, "Ошибка: следует ввводить возраст в промежутке от 18 до 80 лет включительно. Попробуйте ещё раз. \n")
 
     elif sex_list:
-        pattern_int_sex = r"\d{1}"
+        pattern_int_sex = r"\d+"
         sex_int_list = re.search(pattern_int_sex, sex_list[0])
         sex = int(sex_int_list[0])
         if sex_int_list and sex < 3:
@@ -152,7 +152,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                           "8 — в гражданском браке")
 
     elif status_list:
-        pattern_int_status = r"\d{1}"
+        pattern_int_status = r"\d+"
         status_int_list = re.search(pattern_int_status, status_list[0])
         status = int(status_int_list[0])
         if status_int_list and status >= 1 and status <= 8:

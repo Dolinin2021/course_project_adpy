@@ -3,33 +3,42 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
+DSN = 'postgresql+psycopg2://ilya:12345@localhost:5432/adpy_course_project'
 Base = declarative_base()
-DSN = 'postgresql+psycopg2://Ilya:12345@localhost:5432/adpy_course_project'
-
 engine = sq.create_engine(DSN)
 Session = sessionmaker(bind=engine)
 
+class BanList(Base):
+    __tablename__ = 'ban_list'
+    id = sq.Column(sq.Integer, primary_key=True, autoincrement=False)
 
-class User(Base):
-    __tablename__ = 'user'
-
-    id = sq.Column(sq.Integer, primary_key=True)
-    user_id = sq.Column(sq.Integer, unique=True)
+class FavoriteList(Base):
+    __tablename__ = 'favorite_list'
+    id = sq.Column(sq.Integer, primary_key=True, autoincrement=False)
 
 
-class Profile(Base):
-    __tablename__ = 'profile'
-
-    id = sq.Column(sq.Integer, primary_key=True)
-    profile_id = sq.Column(sq.Integer, unique=True)
-    favorite = sq.Column(sq.String)
-    is_banned = sq.Column(sq.String)
-
-class UserToProfile(Base):
-    __tablename__ = 'user_to_profile'
-
-    user_id = sq.Column(sq.Integer, sq.ForeignKey('user.id'))
-    profile_id = sq.Column(sq.Integer, sq.ForeignKey('profile.id'))
+# class User(Base):
+#     __tablename__ = 'user'
+#
+#     id = sq.Column(sq.Integer, primary_key=True)
+#     user_id = sq.Column(sq.Integer, unique=True)
+#
+#
+# class Profile(Base):
+#     __tablename__ = 'profile'
+#
+#     id = sq.Column(sq.Integer, primary_key=True)
+#     profile_id = sq.Column(sq.Integer, unique=True)
+#     favorite = sq.Column(sq.String)
+#     is_banned = sq.Column(sq.String)
+#
+#
+# class UserToProfile(Base):
+#     __tablename__ = 'user_to_profile'
+#
+#     id = sq.Column(sq.Integer, primary_key=True)
+#     user_id = sq.Column(sq.Integer, sq.ForeignKey('user.id'))
+#     profile_id = sq.Column(sq.Integer, sq.ForeignKey('profile.id'))
 
 
 # class Artist(Base):

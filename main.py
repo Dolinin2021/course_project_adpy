@@ -38,4 +38,4 @@ if __name__ == '__main__':
                     response = request_processing(request, vk_client, bot, event.user_id)
 
                     if response:
-                        result = response_processing(response, vk_client, bot, event.user_id)
+                        result = response_processing(response, vk_client, bot, event.user_id, request)

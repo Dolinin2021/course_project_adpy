@@ -1,6 +1,7 @@
 import vk_api
-from vk_api.longpoll import VkLongPoll
+from vk_api.longpoll import VkLongPoll, VkEventType
 from random import randrange
+from db_orm import session, BanList, FavoriteList
 
 
 class VkBot:
@@ -17,3 +18,23 @@ class VkBot:
     def write_msg(self, user_id, message, photo=None):
         self.vk_session.method('messages.send',
                                {'user_id': user_id, 'message': message, 'attachment': photo, 'random_id': randrange(10 ** 7)})
+
+    @staticmethod
+    def add_profile_in_list(vk_bot_class_obj, user_id, profile_id):
+        vk_bot_class_obj.write_msg(user_id, f"Понравился Вам человек? Да\Нет.\n")
+
+        for event in vk_bot_class_obj.longpoll_listen():
+            if event.type == VkEventType.MESSAGE_NEW:
+
+                if event.to_me:
+                    request = event.text
+
+                    if request == 'Да':
+                        favorite = FavoriteList(id=profile_id)
+                        session.add(favorite)
+                        break
+
+                    elif request == 'Нет':
+                        ban = BanList(id=profile_id)
+                        session.add(ban)
+                        break

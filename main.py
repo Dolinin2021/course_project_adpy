@@ -18,24 +18,20 @@ if __name__ == '__main__':
         login = file_obj.read().strip()
 
     vk_client = VkUser(login, vk_token_personal)
-
     bot = VkBot(login, vk_token_community)
-
     country = VkUser.get_countries(login, vk_token_personal)
 
     with open('countries.json', 'w', encoding='utf-8') as file_obj:
         json.dump(country, file_obj, ensure_ascii=False, indent=4)
 
     for event in bot.longpoll_listen():
-
         if event.type == VkEventType.MESSAGE_NEW:
 
             if event.to_me:
                 request = event.text
 
                 if request == event.text:
-
                     response = request_processing(request, vk_client, bot, event.user_id)
 
                     if response:
-                        result = response_processing(response, vk_client, bot, event.user_id, request)
+                        result = response_processing(response, vk_client, bot, event.user_id)

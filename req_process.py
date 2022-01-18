@@ -68,6 +68,9 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     elif request == "Справка":
         vk_bot_class_obj.write_msg(user_id, HELP)
 
+    elif request == "Да" or request == "Нет":
+        ...
+
     elif request == "Пока":
         vk_bot_class_obj.write_msg(user_id, "До встречи!")
         exit()

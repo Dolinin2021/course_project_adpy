@@ -22,15 +22,14 @@ class Profile(Base):
 
     id = sq.Column(sq.Integer, primary_key=True)
     profile_id = sq.Column(sq.Integer, unique=True)
-
+    favorite = sq.Column(sq.String)
+    is_banned = sq.Column(sq.String)
 
 class UserToProfile(Base):
     __tablename__ = 'user_to_profile'
 
     user_id = sq.Column(sq.Integer, sq.ForeignKey('user.id'))
     profile_id = sq.Column(sq.Integer, sq.ForeignKey('profile.id'))
-    favorite = sq.Column(sq.String)
-    is_banned = sq.Column(sq.String)
 
 
 # class Artist(Base):

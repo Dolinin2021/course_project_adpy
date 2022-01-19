@@ -1,7 +1,7 @@
 import vk_api
 from pprint import pprint
 from operator import itemgetter
-
+from vk_bot import VkBot
 
 class VkUser():
 
@@ -15,8 +15,9 @@ class VkUser():
         self._hometown = None
         self._age_from = None
         self._age_do = None
-        self._count = None
+        # self._count = None
         self._user_ids = None
+
         vk_session = vk_api.VkApi(login=self.login, token=self.token)
         try:
             vk_session.auth(token_only=True)
@@ -73,13 +74,13 @@ class VkUser():
     def status(self, value):
         self._status = value
 
-    @property
-    def count(self):
-        return self._count
-
-    @count.setter
-    def count(self, value):
-        self._count = value
+    # @property
+    # def count(self):
+    #     return self._count
+    #
+    # @count.setter
+    # def count(self, value):
+    #     self._count = value
 
     @property
     def user_ids(self):
@@ -103,7 +104,7 @@ class VkUser():
             albums_list.append(album_dict)
         return albums_list
 
-    def photos_get(self, owner_id, album_id, rev=0, extended=1,  count=10):
+    def photos_get(self, owner_id, album_id, rev=0, extended=1,  count=1000):
         photos_list = []
         response = self.vk.photos.get(owner_id=owner_id, album_id=album_id, rev=rev,  extended=extended, count=count)
         # pprint(response)
@@ -119,11 +120,11 @@ class VkUser():
         return sorted_list[:3]
 
     def users_search(self, age_from=age_from, age_do=age_do, sex=sex, country_id=country_id,
-                     hometown=hometown, status=status, count=count):
+                     hometown=hometown, status=status, count=1000):
         response = self.vk.users.search(age_from=age_from, age_do=age_do,
                                         sex=sex, country=country_id, hometown=hometown, status=status,
                                         count=count)
-        # pprint(response)
+        pprint(response)
         return response['items']
 
     def users_get(self, user_ids=user_ids):
@@ -173,10 +174,30 @@ class VkUser():
         vk = vk_session.get_api()
 
         response = vk.database.getCountries(need_all=need_all, count=count)
-        for value in response['items']:
-            country_dict = {
-                value['title']: value['id']
-            }
-            country_list.append(country_dict)
 
+        for value in response['items']:
+            country_dict = {value['title']: value['id']}
+            country_list.append(country_dict)
         return country_list
+
+    # @staticmethod
+    # def photo_output(vk_user_class_obj, vk_bot_class_obj, user_id, value, url, list_name):
+    #
+    #     photo_info = vk_user_class_obj.photos_get(value['id'], 'profile')
+    #     # pprint(photo_info)
+    #     for info in photo_info:
+    #         list_name.append(f"photo{value['id']}_{info['photo_id']}")
+    #     if len(list_name) == 3:
+    #         VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)
+    #
+    #     else:
+    #         albums_info = vk_user_class_obj.get_albums(value['id'])
+    #         for album in albums_info:
+    #             photo_info = vk_user_class_obj.photos_get(value['id'], album['id'])
+    #             # pprint(photo_info)
+    #             for info in photo_info:
+    #                 list_name.append(f"photo{value['id']}_{info['photo_id']}")
+    #             if len(list_name) == 3:
+    #                 VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)
+    #         else:
+    #             VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)

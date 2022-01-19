@@ -4,6 +4,7 @@ import vk_api
 from pprint import pprint
 from db_orm import session, BanList, FavoriteList, query_value_ban_list, query_value_favorite_list
 
+
 def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     HELP = """
@@ -35,6 +36,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     в заданной последовательности, иначе поиск не сработает.
     
     Введите команду "Поиск" для выполнения запроса по заданным параметрам.
+    
     Введите команду "Выход", чтобы выйти из программы.
     """
 
@@ -65,11 +67,17 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     elif request == "Справка":
         vk_bot_class_obj.write_msg(user_id, HELP)
 
-    elif request == "Да" or request == "Нет":
+    elif request == "Да" or request == "Нет" or request == "Стоп" or request =="Продолжить" or request == "Избранное":
         ...
 
     elif request == "Выход":
-        ...
+        vk_bot_class_obj.write_msg(user_id, "До встречи!")
+        if query_value_ban_list or query_value_favorite_list:
+            session.query(BanList).delete()
+            session.query(FavoriteList).delete()
+            session.commit()
+            session.close()
+        exit()
 
     elif id_list:
         pattern_str_id = r"[^Мой id:\s]\S*\s*"
@@ -158,9 +166,8 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if status_int_list and status >= 1 and status <= 8:
             vk_user_class_obj.status = status
             # print(vk_user_class_obj.status)
-            vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно, \n"
-                                          "теперь введите количество запрашиваемых пользователей. \n"
-                                          "Шаблон: Количество запрашиваемых пользователей: <число>")
+            vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно,"
+                                                "теперь введите команду 'Поиск' для начала поиска.")
         else:
             vk_bot_class_obj.write_msg(user_id,
                                  "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз. \n")
@@ -180,10 +187,14 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                 vk_bot_class_obj.write_msg(user_id, "По Вашему запросу ничего не найдено.")
             return response
         else:
-            vk_bot_class_obj.write_msg(user_id, "Ошибка: недостаточно параметров для поиска. Попробуйте ещё раз.")
+            vk_bot_class_obj.write_msg(user_id, "Ошибка: недостаточно параметров для поиска. Проверьте ввдённые параметры и попробуйте ещё раз.")
 
     else:
         vk_bot_class_obj.write_msg(user_id, "Неправильный ввод команды. Попробуйте ещё раз.")
+
+    # vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно, \n"
+    #                                     "теперь введите количество запрашиваемых пользователей. \n"
+    #                                     "Шаблон: Количество запрашиваемых пользователей: <число>")
 
     # 6) Количество запрашиваемых пользователей: <число> - команда для ввода количества пользователей (не более 1000).
 

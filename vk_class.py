@@ -3,6 +3,7 @@ from pprint import pprint
 from operator import itemgetter
 from vk_bot import VkBot
 
+
 class VkUser():
 
     def __init__(self, login, token):

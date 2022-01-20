@@ -27,6 +27,7 @@ class VkBot:
         vk_bot_class_obj.write_msg(user_id, "Введите команду 'Нет', чтобы добавить в чёрный список. \n")
         vk_bot_class_obj.write_msg(user_id, "Введите команду 'Продолжить', чтобы пропустить текущего пользователя.")
         vk_bot_class_obj.write_msg(user_id, "Введите команду 'Стоп', чтобы остановить поиск.")
+        vk_bot_class_obj.write_msg(user_id, "Если текущий поиск окончен, введите команду 'Запуск', чтобы начать новый поиск.")
 
         for event in vk_bot_class_obj.longpoll_listen():
             if event.type == VkEventType.MESSAGE_NEW:
@@ -52,6 +53,7 @@ class VkBot:
                     elif request == "Стоп":
                         vk_bot_class_obj.write_msg(user_id, "Поиск остановлен. \n"
                                                             "Чтобы начать новый поиск, введите команду 'Запуск'. \n"
+                                                            "Чтобы увидеть понравившихся пользователей, введите команду 'Избранное'. \n"
                                                             "Чтобы выйти из программы, введите команду 'Выход'.")
                         break_out_flag = True
                         return break_out_flag
@@ -60,52 +62,13 @@ class VkBot:
                         vk_bot_class_obj.write_msg(user_id, "Неверная команда. Попробуйте ещё раз.")
 
     @staticmethod
-    def user_interaction(vk_bot_class_obj, value, user_id, url, list_name):
+    def user_interaction(vk_bot_class_obj, value, user_id, url, list_name, start_function_adding_profile=True):
         photos = ','.join(list_name[:3])
         vk_bot_class_obj.write_msg(user_id, f"Фамилия: {value['last_name']}\n"
                                             f"Имя: {value['first_name']}\n"
                                             f"Профиль: {url + str(value['id'])}\n", photos)
-        adding_profile = VkBot.add_profile_in_list(vk_bot_class_obj, user_id, value['id'])
+        if start_function_adding_profile:
+            adding_profile = VkBot.add_profile_in_list(vk_bot_class_obj, user_id, value['id'])
+            list_name.clear()
+            return adding_profile
         list_name.clear()
-        return adding_profile
-
-    # @staticmethod
-    # def list_items_of_favorite_list(response, vk_user_class_obj, vk_bot_class_obj, user_id, url, list_name):
-    #
-    #     for value in response:
-    #         try:
-    #             if value['id'] in favorite_list:
-    #                 photo_info = vk_user_class_obj.photos_get(value['id'], 'profile')
-    #
-    #                 for info in photo_info:
-    #                     list_name.append(f"photo{value['id']}_{info['photo_id']}")
-    #
-    #                 if len(list_name) == 3:
-    #                     res = VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)
-    #                     if res:
-    #                         return
-    #
-    #                 else:
-    #                     albums_info = vk_user_class_obj.get_albums(value['id'])
-    #                     for album in albums_info:
-    #                         photo_info = vk_user_class_obj.photos_get(value['id'], album['id'])
-    #
-    #                         for info in photo_info:
-    #                             list_name.append(f"photo{value['id']}_{info['photo_id']}")
-    #
-    #                         if len(list_name) == 3:
-    #                             res = VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)
-    #                             if res:
-    #                                 return
-    #
-    #                     else:
-    #                         res = VkBot.user_interaction(vk_bot_class_obj, value, user_id, url, list_name)
-    #                         if res:
-    #                             return
-    #             else:
-    #                 vk_bot_class_obj.write_msg(user_id, "Список пуст. Добавьте кого-нибудь из найденных пользователей в 'Избранное' и попробуйте ещё раз.")
-    #
-    #         except vk_api.exceptions.ApiError as error_msg:
-    #             # print(error_msg)
-    #             vk_bot_class_obj.write_msg(user_id, f"Возникла ошибка API VK. \n"
-    #                                                 f"Код ошибки и её описание: \n{error_msg}")

@@ -1,8 +1,8 @@
 import re
 import json
 import vk_api
-from pprint import pprint
 from db_orm import session, BanList, FavoriteList, query_value_ban_list, query_value_favorite_list
+from favor_list import favorite_of_list
 
 
 def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
@@ -35,9 +35,11 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     Для того, чтобы корректно сработал поиск пользователей по заданным параметрам, необходимо ввести все параметры
     в заданной последовательности, иначе поиск не сработает.
     
-    Введите команду "Поиск" для выполнения запроса по заданным параметрам.
+    Введите команду 'Поиск' для выполнения запроса по заданным параметрам.
     
-    Введите команду "Выход", чтобы выйти из программы.
+    Введите команду 'Избранное', чтобы увидеть понравившихся пользователей.
+    
+    Введите команду 'Выход', чтобы выйти из программы.
     """
 
     pattern_id = r"Мой id:\s*\S*\s*"
@@ -67,8 +69,11 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     elif request == "Справка":
         vk_bot_class_obj.write_msg(user_id, HELP)
 
-    elif request == "Да" or request == "Нет" or request == "Стоп" or request =="Продолжить" or request == "Избранное":
+    elif request == "Да" or request == "Нет" or request == "Стоп" or request == "Продолжить":
         ...
+
+    elif request == "Избранное":
+        favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id)
 
     elif request == "Выход":
         vk_bot_class_obj.write_msg(user_id, "До встречи!")
@@ -86,13 +91,14 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             vk_user_class_obj.user_ids = str_id_list[0]
             try:
                 search = vk_user_class_obj.users_get(vk_user_class_obj.user_ids)
-                for name in search:
-                    vk_bot_class_obj.write_msg(user_id, f"{name['first_name']}, индентификатор пользователя задан корректно, теперь введите слово 'Справка', "
-                                                        f"чтобы вывелось окно с инструкцией по использованию программы. ")
-            except vk_api.exceptions.ApiError as error_msg:
-                # print(error_msg)
-                vk_bot_class_obj.write_msg(user_id, f"Возникла ошибка API VK. \n"
-                                                    f"Код ошибки и её описание: \n{error_msg}")
+                if search:
+                    for name in search:
+                        vk_bot_class_obj.write_msg(user_id, f"{name['first_name']}, индентификатор пользователя задан корректно, теперь введите слово 'Справка', "
+                                                            f"чтобы вывелось окно с инструкцией по использованию программы. ")
+                else:
+                    vk_bot_class_obj.write_msg(user_id, "Ничего не найдено, попробуйте ещё раз.")
+            except vk_api.exceptions.ApiError:
+                ...
 
     elif age_list:
         pattern_int_age = r"[\d]+[\d]+"
@@ -102,8 +108,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if age_int_list and age_from >= 18 and age_do <= 80 and age_do > age_from:
             vk_user_class_obj.age_from = age_from
             vk_user_class_obj.age_do = age_do
-            # print(vk_user_class_obj.age_from)
-            # print(vk_user_class_obj.age_do)
             vk_bot_class_obj.write_msg(user_id, "Возраст задан корректно, теперь введите пол. \n"
                                           "Шаблон: Пол: <число>, где <число>: \n"
                                           "0 — любой пол, \n"
@@ -118,7 +122,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         sex = int(sex_int_list[0])
         if sex_int_list and sex < 3:
             vk_user_class_obj.sex = sex
-            # print(vk_user_class_obj.sex)
             vk_bot_class_obj.write_msg(user_id, "Пол задан корректно, теперь введите название страны. \n"
                                           "Шаблон: Страна: <название страны>")
         else:
@@ -136,7 +139,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                     for key, value in data.items():
                         if country_name[0] in key:
                             vk_user_class_obj.country_id = value
-                            # print(vk_user_class_obj.country_id)
                             vk_bot_class_obj.write_msg(user_id, "Страна задана верно. теперь введите название города. \n"
                                                           "Шаблон: Город: <название города>")
             except TypeError:
@@ -147,7 +149,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         hometown_name = re.search(pattern_name_hometown, hometown_list[0], re.I)
         if hometown_name:
             vk_user_class_obj.hometown = hometown_name[0]
-            # print(vk_user_class_obj.hometown)
             vk_bot_class_obj.write_msg(user_id, "Город задан верно, теперь введите семейное положение. \n"
                                           "Шаблон: Семейное положение: <число>, где <число>: \n"
                                           "1 — не женат (не замужем),\n"
@@ -165,7 +166,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         status = int(status_int_list[0])
         if status_int_list and status >= 1 and status <= 8:
             vk_user_class_obj.status = status
-            # print(vk_user_class_obj.status)
             vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно,"
                                                 "теперь введите команду 'Поиск' для начала поиска.")
         else:
@@ -182,34 +182,15 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             response = vk_user_class_obj.users_search(vk_user_class_obj.age_from, vk_user_class_obj.age_do, vk_user_class_obj.sex,
                                                       vk_user_class_obj.country_id, vk_user_class_obj.hometown,
                                                       vk_user_class_obj.status)
-            # pprint(response)
+
+            vk_bot_class_obj.write_msg(user_id, f"По Вашему запросу найдено {response['count']} пользователей. \n")
+
             if response == []:
                 vk_bot_class_obj.write_msg(user_id, "По Вашему запросу ничего не найдено.")
             return response
+
         else:
             vk_bot_class_obj.write_msg(user_id, "Ошибка: недостаточно параметров для поиска. Проверьте ввдённые параметры и попробуйте ещё раз.")
 
     else:
         vk_bot_class_obj.write_msg(user_id, "Неправильный ввод команды. Попробуйте ещё раз.")
-
-    # vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно, \n"
-    #                                     "теперь введите количество запрашиваемых пользователей. \n"
-    #                                     "Шаблон: Количество запрашиваемых пользователей: <число>")
-
-    # 6) Количество запрашиваемых пользователей: <число> - команда для ввода количества пользователей (не более 1000).
-
-    # pattern_count_users = r"Количество запрашиваемых пользователей:\s*\d+"
-    # count_list = re.search(pattern_count_users, request, re.I)
-
-    # elif count_list:
-    #     pattern_int_count = r"\d+"
-    #     count_int_list = re.search(pattern_int_count, count_list[0])
-    #     count = int(count_int_list[0])
-    #     if count_int_list and count >= 1 and count <= 1000:
-    #         vk_user_class_obj.count = count
-    #         # print(vk_user_class_obj.count)
-    #         vk_bot_class_obj.write_msg(user_id, "Количество запрашиваемых пользователей задано верно.")
-
-        # else:
-        #     vk_bot_class_obj.write_msg(user_id,
-        #                          "Ошибка: следует ввводить количество запрашиваемых пользователей в промежутке от 1 до 15 включительно. Попробуйте ещё раз. \n")

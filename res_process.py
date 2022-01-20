@@ -3,7 +3,7 @@ from vk_bot import VkBot
 from db_orm import session, ban_list
 
 
-def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id, request=None):
+def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     photo_list = []
     url = "https://vk.com/id"

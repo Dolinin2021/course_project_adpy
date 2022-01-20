@@ -7,7 +7,11 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
     photo_list = []
     url = "https://vk.com/id"
 
-    if favorite_list:
+    if favorite_list == []:
+        vk_bot_class_obj.write_msg(user_id,
+                                   "Список пуст. Добавьте кого-нибудь из найденных пользователей в 'Избранное' и попробуйте ещё раз.")
+
+    elif favorite_list:
         vk_bot_class_obj.write_msg(user_id, "Список понравившихся пользователей: \n")
         for id in favorite_list:
             search = vk_user_class_obj.users_get(id)
@@ -37,7 +41,3 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
                         res = VkBot.user_interaction(vk_bot_class_obj, item, user_id, url, photo_list, False)
                         if res:
                             return
-
-    elif favorite_list == []:
-        vk_bot_class_obj.write_msg(user_id,
-                                   "Список пуст. Добавьте кого-нибудь из найденных пользователей в 'Избранное' и попробуйте ещё раз.")

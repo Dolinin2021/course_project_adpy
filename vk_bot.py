@@ -25,8 +25,8 @@ class VkBot:
         vk_bot_class_obj.write_msg(user_id, "Понравился ли Вам человек? \n")
         vk_bot_class_obj.write_msg(user_id, "Введите команду 'Да', чтобы добавить в 'Избранное'. \n")
         vk_bot_class_obj.write_msg(user_id, "Введите команду 'Нет', чтобы добавить в чёрный список. \n")
-        vk_bot_class_obj.write_msg(user_id, "Введите команду 'Продолжить', чтобы пропустить текущего пользователя.")
-        vk_bot_class_obj.write_msg(user_id, "Введите команду 'Стоп', чтобы остановить поиск.")
+        vk_bot_class_obj.write_msg(user_id, "Введите команду 'Продолжить', чтобы пропустить текущего пользователя. \n")
+        vk_bot_class_obj.write_msg(user_id, "Введите команду 'Стоп', чтобы остановить поиск. \n")
         vk_bot_class_obj.write_msg(user_id, "Если текущий поиск окончен, введите команду 'Запуск', чтобы начать новый поиск.")
 
         for event in vk_bot_class_obj.longpoll_listen():

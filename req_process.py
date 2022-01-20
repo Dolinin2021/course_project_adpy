@@ -32,8 +32,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     7 — влюблен(-а),
     8 — в гражданском браке.
     
-    Для того, чтобы корректно сработал поиск пользователей по заданным параметрам, необходимо ввести все параметры
-    в заданной последовательности, иначе поиск не сработает.
+    Для того, чтобы корректно сработал поиск пользователей по заданным параметрам, необходимо ввести все параметры, иначе поиск не сработает.
     
     Введите команду 'Поиск' для выполнения запроса по заданным параметрам.
     
@@ -61,10 +60,10 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     if request == "Запуск":
         vk_bot_class_obj.write_msg(user_id, "Вас приветствует чат-бот VKinder! \n"
-                                      "Желаете воспользоваться нашим сервисом для знакомств? \n"
-                                      "Для начала введите свой id или screen_name, \n"
-                                      "используя следующий формат: \n"
-                                      "Мой id: <id-пользователя>")
+                                            "Желаете воспользоваться нашим сервисом для знакомств? \n"
+                                            "Для начала введите свой id или screen_name, \n"
+                                            "используя следующий формат: \n"
+                                            "Мой id: <id-пользователя>")
 
     elif request == "Справка":
         vk_bot_class_obj.write_msg(user_id, HELP)
@@ -109,12 +108,12 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             vk_user_class_obj.age_from = age_from
             vk_user_class_obj.age_do = age_do
             vk_bot_class_obj.write_msg(user_id, "Возраст задан корректно, теперь введите пол. \n"
-                                          "Шаблон: Пол: <число>, где <число>: \n"
-                                          "0 — любой пол, \n"
-                                          "1 — женский пол, \n"
-                                          "2 — мужской пол.")
+                                                "Шаблон: Пол: <число>, где <число>: \n"
+                                                "0 — любой пол, \n"
+                                                "1 — женский пол, \n"
+                                                "2 — мужской пол.")
         else:
-            vk_bot_class_obj.write_msg(user_id, "Ошибка: следует ввводить возраст в промежутке от 18 до 80 лет включительно. Попробуйте ещё раз. \n")
+            vk_bot_class_obj.write_msg(user_id, "Ошибка: следует ввводить возраст в промежутке от 18 до 80 лет включительно. Попробуйте ещё раз.")
 
     elif sex_list:
         pattern_int_sex = r"\d+"
@@ -123,7 +122,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if sex_int_list and sex < 3:
             vk_user_class_obj.sex = sex
             vk_bot_class_obj.write_msg(user_id, "Пол задан корректно, теперь введите название страны. \n"
-                                          "Шаблон: Страна: <название страны>")
+                                                "Шаблон: Страна: <название страны>")
         else:
             vk_bot_class_obj.write_msg(user_id,
                                  "Ошибка: следует ввводить пол в промежутке от 0 до 2 включительно. Попробуйте ещё раз. \n")
@@ -140,7 +139,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                         if country_name[0] in key:
                             vk_user_class_obj.country_id = value
                             vk_bot_class_obj.write_msg(user_id, "Страна задана верно. теперь введите название города. \n"
-                                                          "Шаблон: Город: <название города>")
+                                                                "Шаблон: Город: <название города>")
             except TypeError:
                 vk_bot_class_obj.write_msg(user_id, "Страна не найдена. Попробуйте ещё раз")
 
@@ -150,15 +149,15 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if hometown_name:
             vk_user_class_obj.hometown = hometown_name[0]
             vk_bot_class_obj.write_msg(user_id, "Город задан верно, теперь введите семейное положение. \n"
-                                          "Шаблон: Семейное положение: <число>, где <число>: \n"
-                                          "1 — не женат (не замужем),\n"
-                                          "2 — встречается,\n"
-                                          "3 — помолвлен(-а),\n"
-                                          "4 — женат (замужем),\n"
-                                          "5 — всё сложно,\n"
-                                          "6 — в активном поиске,\n"
-                                          "7 — влюблен(-а),\n"
-                                          "8 — в гражданском браке")
+                                                "Шаблон: Семейное положение: <число>, где <число>: \n"
+                                                "1 — не женат (не замужем),\n"
+                                                "2 — встречается,\n"
+                                                "3 — помолвлен(-а),\n"
+                                                "4 — женат (замужем),\n"
+                                                "5 — всё сложно,\n"
+                                                "6 — в активном поиске,\n"
+                                                "7 — влюблен(-а),\n"
+                                                "8 — в гражданском браке")
 
     elif status_list:
         pattern_int_status = r"\d+"
@@ -170,14 +169,13 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                                 "теперь введите команду 'Поиск' для начала поиска.")
         else:
             vk_bot_class_obj.write_msg(user_id,
-                                 "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз. \n")
+                                 "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз.")
 
     elif request == "Поиск":
         if vk_user_class_obj.age_from and vk_user_class_obj.age_do and vk_user_class_obj.sex and vk_user_class_obj.country_id and \
             vk_user_class_obj.hometown and vk_user_class_obj.status:
 
-            vk_bot_class_obj.write_msg(user_id, "Все параметры заданы верно. \n"
-                                          "Результат:")
+            vk_bot_class_obj.write_msg(user_id, "Все параметры заданы верно.")
 
             response = vk_user_class_obj.users_search(vk_user_class_obj.age_from, vk_user_class_obj.age_do, vk_user_class_obj.sex,
                                                       vk_user_class_obj.country_id, vk_user_class_obj.hometown,
@@ -187,6 +185,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
             if response == []:
                 vk_bot_class_obj.write_msg(user_id, "По Вашему запросу ничего не найдено.")
+
             return response
 
         else:

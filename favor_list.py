@@ -34,6 +34,9 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
                     photo_list.append(f"photo{item['id']}_{info['photo_id']}")
 
                 if len(photo_list) == 3:
+                    # Значение False выключает метод add_profile_in_list класса VkBot,
+                    # чтобы вывелась только информация о пользователе и фото,
+                    # без возможности добавления пользователя в какой-либо список.
                     break_out_flag = VkBot.query_result(vk_bot_class_obj, item, user_id, url, photo_list, False)
                     if break_out_flag:
                         return

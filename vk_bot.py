@@ -1,7 +1,7 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from random import randrange
-from db_orm import session, BanList, FavoriteList,ban_list, favorite_list
+from db_orm import session, BanList, FavoriteList, ban_list, favorite_list
 
 
 class VkBot:
@@ -28,7 +28,7 @@ class VkBot:
         return longpoll.listen()
 
     def write_msg(self, user_id, message, photo=None):
-        """ Вызов метода VK API messages.send.
+        """ Вызови метод VK API messages.send.
 
         :param user_id: id пользователя
         :type user_id: int
@@ -44,9 +44,8 @@ class VkBot:
         self.vk_session.method('messages.send',
                                {'user_id': user_id, 'message': message, 'attachment': photo, 'random_id': randrange(10 ** 7)})
 
-
     def add_profile_in_list(self, user_id, profile_id):
-        """ Добавить пользователя в список.
+        """ Добавь пользователя в список.
 
         :param user_id: id пользователя
         :type user_id: int
@@ -114,18 +113,20 @@ class VkBot:
         :param list_name: список фотографий
         :type list_name: list
 
-        :param start_function_adding_profile: запуск метода add_profile_in_list
+        :param start_function_adding_profile: запуск метода add_profile_in_list.
+                                Возвращает либо True, либо False.
         :type start_function_adding_profile: bool
 
-        :return adding_profile: результат выполнения метода add_profile_in_list
+        :return adding_profile: результат выполнения метода add_profile_in_list.
+                                Возвращает либо True, либо False.
         :type adding_profile: bool
 
         """
 
         photos = ','.join(list_name[:3])
         self.write_msg(user_id, f"Фамилия: {value['last_name']}\n"
-                                            f"Имя: {value['first_name']}\n"
-                                            f"Профиль: {url + str(value['id'])}\n", photos)
+                                f"Имя: {value['first_name']}\n"
+                                f"Профиль: {url + str(value['id'])}\n", photos)
         if start_function_adding_profile:
             adding_profile = self.add_profile_in_list(user_id, value['id'])
             list_name.clear()

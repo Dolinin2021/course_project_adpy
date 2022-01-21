@@ -54,7 +54,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     
     Введите команду 'Поиск' для выполнения запроса по заданным параметрам.
     
-    Введите команду 'Избранное', чтобы увидеть понравившихся пользователей.
+    Введите команду 'Избранное', чтобы увидеть список понравившихся пользователей.
     
     Введите команду 'Выход', чтобы выйти из программы.
     """
@@ -141,7 +141,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             vk_user_class_obj.sex = sex
             vk_bot_class_obj.write_msg(user_id, "Пол задан корректно, теперь введите название страны. \n"
                                                 "Шаблон: Страна: <название страны> \n"
-                                                "При неправильно введённом значении поиск не заработает.")
+                                                "При неправильно введённом значении поиск не сработает.")
         else:
             vk_bot_class_obj.write_msg(user_id,
                                  "Ошибка: следует ввводить пол в промежутке от 0 до 2 включительно. Попробуйте ещё раз. \n")
@@ -186,7 +186,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if status_int_list and status >= 1 and status <= 8:
             vk_user_class_obj.status = status
             vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно,"
-                                                "теперь введите команду 'Поиск' для начала поиска.")
+                                                "теперь введите команду 'Поиск'.")
         else:
             vk_bot_class_obj.write_msg(user_id,
                                  "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз.")

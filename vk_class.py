@@ -116,7 +116,7 @@ class VkUser():
     def get_albums(self, owner_id):
         """" Вернуть список фотоальбомов пользователя или сообщества.
 
-        :param owner_id: aидентификатор пользователя или сообщества,
+        :param owner_id: идентификатор пользователя или сообщества,
                     которому принадлежат альбомы.
         :type owner_id: int
 
@@ -125,7 +125,7 @@ class VkUser():
 
         :exception vk_api.exceptions.ApiError: 30 - This profile is private
 
-        Более подробно в официальной документации: https://vk.com/dev/photos.getAlbums
+        Ссылка на официальную документацию: https://vk.com/dev/photos.getAlbums
 
         """
         albums_list = []
@@ -169,7 +169,7 @@ class VkUser():
         :type extended: int
 
         :param count: количество записей, которое будет получено.
-                Максимальное значение 1000. По умолчнию равно 1000.
+                По умолчнию равно 1000, максимальное значение 1000.
         :type count: int
 
         :return sorted_list: список фотографий
@@ -177,7 +177,7 @@ class VkUser():
 
         :exception vk_api.exceptions.ApiError: 30 - This profile is private
 
-        Более подробно в официальной документации: https://vk.com/dev/photos.get
+        Ссылка на официальную документацию: https://vk.com/dev/photos.get
 
         """
 
@@ -217,13 +217,13 @@ class VkUser():
         :type status: int
 
         :param  count: количество возвращаемых пользователей.
-                Максимальное значение 1000. По умолчанию равно 1000.
+                По умолчанию равно 1000, максимальное значение 1000.
         :type count: int
 
         :return: response: результат запроса
         :type: response: dict
 
-        Более подробно в официальной документации: https://vk.com/dev/users.search
+        Ссылка на официальную документацию: https://vk.com/dev/users.search
 
         """
 
@@ -238,7 +238,7 @@ class VkUser():
         :param user_ids:  перечисленные через запятую идентификаторы
             пользователей или их короткие имена (screen_name).
             Список слов, разделенных через запятую,
-            количество элементов должно составлять не более 1000
+            количество элементов должно составлять не более 1000.
         :type user_ids: str
 
         :return: user_list: список с информацией о пользователе
@@ -246,7 +246,7 @@ class VkUser():
 
         :exception: 3610 - User is deactivated
 
-        Более подробно в официальной документации: https://vk.com/dev/users.get
+        Ссылка на официальную документацию: https://vk.com/dev/users.get
 
         """
         user_list = []
@@ -285,7 +285,7 @@ class VkUser():
 
         :except: vk_api.AuthError: ошибка авторизации
 
-        Более подробно в официальной документации: https://vk.com/dev/database.getCountries
+        Ссылка на официальную документацию: https://vk.com/dev/database.getCountries
 
         """
 

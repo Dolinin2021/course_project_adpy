@@ -3,7 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-DSN = 'postgresql+psycopg2://ilya:12345@localhost:5432/adpy_course_project'
+with open('dsn.txt', 'r', encoding='utf-8') as file_obj:
+    DSN = file_obj.read().strip()
+
 Base = declarative_base()
 
 engine = sq.create_engine(DSN)
@@ -17,11 +19,13 @@ favorite_list = []
 
 
 class BanList(Base):
+    """Список пользователей, которых добавили в чёрный список."""
     __tablename__ = 'ban_list'
     id = sq.Column(sq.Integer, primary_key=True, autoincrement=False)
 
 
 class FavoriteList(Base):
+    """Список пользователей, которых добавили в список 'Избранное'."""
     __tablename__ = 'favorite_list'
     id = sq.Column(sq.Integer, primary_key=True, autoincrement=False)
 

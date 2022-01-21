@@ -33,7 +33,9 @@ def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
                     photo_list.append(f"photo{value['id']}_{info['photo_id']}")
 
                 if len(photo_list) == 3:
+                    # Если длина списка фотографий равна 3, то выведи в чат результат выполнения запроса.
                     break_out_flag = vk_bot_class_obj.query_result(value, user_id, url, photo_list)
+                    # Если пользователь ввёл команду 'Стоп', останови цикл.
                     if break_out_flag:
                         return
 

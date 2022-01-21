@@ -3,6 +3,18 @@ from vk_bot import VkBot
 
 
 def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
+    """ Функция для вывода списка понравившихся пользователей.
+
+    :param vk_user_class_obj: объект :class:`VkUser`
+    :type vk_user_class_obj: class 'VkUser'
+
+    :param vk_bot_class_obj: объект :class:`VkBot`
+    :type vk_bot_class_obj: class 'VkBot'
+
+    :param user_id: id пользователя
+    :type user_id: int
+
+    """
 
     photo_list = []
     url = "https://vk.com/id"
@@ -10,6 +22,7 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
     if favorite_list == []:
         vk_bot_class_obj.write_msg(user_id,
                                    "Список пуст. Добавьте кого-нибудь из найденных пользователей в 'Избранное' и попробуйте ещё раз.")
+        return
 
     elif favorite_list:
         vk_bot_class_obj.write_msg(user_id, "Список понравившихся пользователей: \n")
@@ -21,8 +34,8 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
                     photo_list.append(f"photo{item['id']}_{info['photo_id']}")
 
                 if len(photo_list) == 3:
-                    res = VkBot.user_interaction(vk_bot_class_obj, item, user_id, url, photo_list, False)
-                    if res:
+                    break_out_flag = VkBot.query_result(vk_bot_class_obj, item, user_id, url, photo_list, False)
+                    if break_out_flag:
                         return
 
                 else:
@@ -33,11 +46,11 @@ def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):
                             photo_list.append(f"photo{item['id']}_{info['photo_id']}")
 
                         if len(photo_list) == 3:
-                            res = VkBot.user_interaction(vk_bot_class_obj, item, user_id, url, photo_list, False)
-                            if res:
+                            break_out_flag = VkBot.query_result(vk_bot_class_obj, item, user_id, url, photo_list, False)
+                            if break_out_flag:
                                 return
 
                     else:
-                        res = VkBot.user_interaction(vk_bot_class_obj, item, user_id, url, photo_list, False)
-                        if res:
+                        break_out_flag = VkBot.query_result(vk_bot_class_obj, item, user_id, url, photo_list, False)
+                        if break_out_flag:
                             return

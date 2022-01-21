@@ -6,6 +6,24 @@ from favor_list import favorite_of_list
 
 
 def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
+    """ Функция для обработки запросов.
+
+    :param request: запрос пользователя
+    :type request: str
+
+    :param vk_user_class_obj: объект :class:`VkUser`
+    :type vk_user_class_obj: class 'VkUser'
+
+    :param vk_bot_class_obj: объект :class:`VkBot`
+    :type vk_bot_class_obj: class 'VkBot'
+
+    :param user_id: id пользователя
+    :type user_id: int
+
+    :except vk_api.exceptions.ApiError: исключения VK API
+    Ссылка на официальную документацию: https://vk.com/dev/errors
+
+    """
 
     HELP = """
     Для того, чтобы найти человека через наш сервис, 
@@ -32,7 +50,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     7 — влюблен(-а),
     8 — в гражданском браке.
     
-    Для того, чтобы корректно сработал поиск пользователей по заданным параметрам, необходимо ввести все параметры, иначе поиск не сработает.
+    Для того, чтобы корректно сработал поиск пользователей по заданным параметрам, необходимо ввести все параметры.
     
     Введите команду 'Поиск' для выполнения запроса по заданным параметрам.
     
@@ -122,7 +140,8 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         if sex_int_list and sex < 3:
             vk_user_class_obj.sex = sex
             vk_bot_class_obj.write_msg(user_id, "Пол задан корректно, теперь введите название страны. \n"
-                                                "Шаблон: Страна: <название страны>")
+                                                "Шаблон: Страна: <название страны> \n"
+                                                "При неправильно введённом значении поиск не заработает.")
         else:
             vk_bot_class_obj.write_msg(user_id,
                                  "Ошибка: следует ввводить пол в промежутке от 0 до 2 включительно. Попробуйте ещё раз. \n")
@@ -139,7 +158,8 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                         if country_name[0] in key:
                             vk_user_class_obj.country_id = value
                             vk_bot_class_obj.write_msg(user_id, "Страна задана верно. теперь введите название города. \n"
-                                                                "Шаблон: Город: <название города>")
+                                                                "Шаблон: Город: <название города> \n"
+                                                                "При неправильно введённом значении поиск ничего не найдёт.")
             except TypeError:
                 vk_bot_class_obj.write_msg(user_id, "Страна не найдена. Попробуйте ещё раз")
 
@@ -157,7 +177,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                                 "5 — всё сложно,\n"
                                                 "6 — в активном поиске,\n"
                                                 "7 — влюблен(-а),\n"
-                                                "8 — в гражданском браке")
+                                                "8 — в гражданском браке \n")
 
     elif status_list:
         pattern_int_status = r"\d+"
@@ -183,8 +203,9 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
             vk_bot_class_obj.write_msg(user_id, f"По Вашему запросу найдено {response['count']} пользователей. \n")
 
-            if response == []:
+            if response['items'] == []:
                 vk_bot_class_obj.write_msg(user_id, "По Вашему запросу ничего не найдено.")
+                return
 
             return response
 

@@ -98,7 +98,7 @@ class VkBot:
                     else:
                         self.write_msg(user_id, "Неверная команда. Попробуйте ещё раз.")
 
-    def query_result(self, value, user_id, url, list_name, start_function_adding_profile=True):
+    def query_result(self, value, user_id, url, list_name, start=True):
         """ Выведи в чат результат выполнения запроса users.get.
 
         :param value: информация о пользователе в результате выполнения запроса
@@ -113,9 +113,9 @@ class VkBot:
         :param list_name: список фотографий
         :type list_name: list
 
-        :param start_function_adding_profile: запуск метода add_profile_in_list.
-                                Возвращает либо True, либо False.
-        :type start_function_adding_profile: bool
+        :param start: запуск метода add_profile_in_list.
+                Возвращает либо True, либо False. По умолчанию равно True.
+        :type start: bool
 
         :return adding_profile: результат выполнения метода add_profile_in_list.
                                 Возвращает либо True, либо False.
@@ -127,7 +127,7 @@ class VkBot:
         self.write_msg(user_id, f"Фамилия: {value['last_name']}\n"
                                 f"Имя: {value['first_name']}\n"
                                 f"Профиль: {url + str(value['id'])}\n", photos)
-        if start_function_adding_profile:
+        if start:
             adding_profile = self.add_profile_in_list(user_id, value['id'])
             list_name.clear()
             return adding_profile

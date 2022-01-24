@@ -124,9 +124,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         pattern_int_age = r"[\d]+[\d]+"
         age_int_list = re.findall(pattern_int_age, age_list[0])
         age_from = int(age_int_list[0])
-        # print(age_from)
         age_do = int(age_int_list[1])
-        # print(age_do)
         if age_int_list and age_from >= 18 and age_do <= 80 and age_do > age_from:
             vk_user_class_obj.age_from = age_from
             vk_user_class_obj.age_do = age_do
@@ -142,7 +140,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         pattern_int_sex = r"\d+"
         sex_int_list = re.search(pattern_int_sex, sex_list[0])
         sex = int(sex_int_list[0])
-        # print(sex)
         if sex_int_list and sex >= 0 and sex <= 2:
             vk_user_class_obj.sex = sex
             vk_bot_class_obj.write_msg(user_id, "Пол задан корректно, теперь введите название страны. \n"
@@ -154,12 +151,10 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     elif country_list:
         pattern_name_country = r"[^Страна:\s]\D+"
-        # print(country_list[0])
         # Иногда регулярное выражение не находит первую букву
         # и вместо слово 'Россия' получается слово 'оссия'
         # поэтому здесь не используется флаг re.IGNORECASE
         country_name = re.search(pattern_name_country, country_list[0])
-        # print(country_name[0])
         if country_name:
             with open('countries.json', 'r', encoding='utf-8') as file_obj:
                 data_countries = json.load(file_obj)
@@ -178,7 +173,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     elif hometown_list:
         pattern_name_hometown = r"[^Город:\s]\D+"
         hometown_name = re.search(pattern_name_hometown, hometown_list[0], re.I)
-        # print(hometown_name[0])
         if hometown_name:
             vk_user_class_obj.hometown = hometown_name[0]
             vk_bot_class_obj.write_msg(user_id, "Город задан верно, теперь введите семейное положение. \n"
@@ -196,7 +190,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
         pattern_int_status = r"\d+"
         status_int_list = re.search(pattern_int_status, status_list[0])
         status = int(status_int_list[0])
-        # print(status)
         if status_int_list and status >= 1 and status <= 8:
             vk_user_class_obj.status = status
             vk_bot_class_obj.write_msg(user_id, "Семейное положение задано верно,"

@@ -17,7 +17,7 @@ unique_list = []
 
 
 class UniqueList(Base):
-    """Пользователи, которые уже были найдены в результате поиска и не должны выводиться при повторном поиске."""
+    """Пользователи, которые были найдены в результате поиска и не должны выводиться при повторном поиске."""
     __tablename__ = 'unique_list'
     id = sq.Column(sq.Integer, primary_key=True, autoincrement=False)
 

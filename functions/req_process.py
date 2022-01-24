@@ -200,7 +200,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     elif request == "Поиск":
         if vk_user_class_obj.age_from and vk_user_class_obj.age_do and vk_user_class_obj.sex and \
-                vk_user_class_obj.country_id and vk_user_class_obj.hometown and vk_user_class_obj.status:
+                vk_user_class_obj.hometown and vk_user_class_obj.status:
 
             vk_bot_class_obj.write_msg(user_id, "Все параметры заданы верно.")
 

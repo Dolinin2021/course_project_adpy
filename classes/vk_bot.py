@@ -1,7 +1,7 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from random import randrange
-from db_orm import session, BanList, FavoriteList, ban_list, favorite_list
+from classes.db_orm import session, FavoriteList, BanList, favorite_list, ban_list
 
 
 class VkBot:
@@ -28,7 +28,7 @@ class VkBot:
         return longpoll.listen()
 
     def write_msg(self, user_id, message, photo=None):
-        """ Вызови метод VK API messages.send.
+        """ Вызвать метод VK API messages.send.
 
         :param user_id: id пользователя
         :type user_id: int
@@ -76,12 +76,14 @@ class VkBot:
                         favorite = FavoriteList(id=profile_id)
                         favorite_list.append(profile_id)
                         session.add(favorite)
+                        session.commit()
                         break
 
                     elif request == "Нет":
                         ban = BanList(id=profile_id)
                         ban_list.append(profile_id)
                         session.add(ban)
+                        session.commit()
                         break
 
                     elif request == "Продолжить":
@@ -113,7 +115,7 @@ class VkBot:
         :param list_name: список фотографий
         :type list_name: list
 
-        :param start: запуск метода add_profile_in_list.
+        :param start: вывод окна по добавлению пользователя в список (запуск метода add_profile_in_list).
                 Возвращает либо True, либо False. По умолчанию равно True.
         :type start: bool
 

@@ -1,5 +1,7 @@
 import vk_api
-from db_orm import session, ban_list
+import sqlalchemy.exc
+import psycopg2.errors
+from classes.db_orm import session, UniqueList, unique_list, ban_list
 
 
 def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
@@ -20,6 +22,13 @@ def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
     :except vk_api.exceptions.ApiError: исключения VK API
     Ссылка на официальную документацию: https://vk.com/dev/errors
 
+    :exception psycopg2.errors.UniqueViolation: повторяющееся значение ключа нарушает ограничение уникальности
+
+    :exception sqlalchemy.exc.IntegrityError: повторяющееся значение ключа нарушает ограничение уникальности
+
+    :exception sqlalchemy.exc.PendingRollbackError: не удалось выполнить транзакцию, её необходимо отменить,
+                                            чтобы продолжить.
+
     """
 
     photo_list = []
@@ -27,7 +36,12 @@ def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
 
     for value in response['items']:
         try:
-            if value['id'] not in ban_list:
+            if value['id'] not in ban_list and value['id'] not in unique_list:
+
+                unique = UniqueList(id=value['id'])
+                unique_list.append(value['id'])
+                session.add(unique)
+
                 photo_info = vk_user_class_obj.photos_get(value['id'], 'profile')
                 for info in photo_info:
                     photo_list.append(f"photo{value['id']}_{info['photo_id']}")
@@ -58,5 +72,9 @@ def response_processing(response, vk_user_class_obj, vk_bot_class_obj, user_id):
 
         except vk_api.exceptions.ApiError:
             ...
-        finally:
-            session.commit()
+        except psycopg2.errors.UniqueViolation:
+            ...
+        except sqlalchemy.exc.IntegrityError:
+            ...
+        except sqlalchemy.exc.PendingRollbackError:
+            ...

@@ -141,7 +141,7 @@ class VkUser():
             albums_list.append(album_dict)
         return albums_list
 
-    def photos_get(self, owner_id, album_id, rev=0, extended=1,  count=1000):
+    def photos_get(self, owner_id, album_id, rev=0, extended=1,  count=500):
         """" Вернуть список фотографий в альбоме.
 
         :param owner_id: идентификатор владельца альбома
@@ -169,7 +169,7 @@ class VkUser():
         :type extended: int
 
         :param count: количество записей, которое будет получено.
-                По умолчнию равно 1000, максимальное значение 1000.
+                По умолчнию равно 500, максимальное значение 1000.
         :type count: int
 
         :return sorted_list: список фотографий
@@ -195,7 +195,7 @@ class VkUser():
         return sorted_list[:3]
 
     def users_search(self, age_from=age_from, age_do=age_do, sex=sex, country_id=country_id,
-                     hometown=hometown, status=status, count=1000):
+                     hometown=hometown, status=status, count=500):
         """ Вернуть список пользователей в соответствии с заданными критериями поиска.
 
         :param age_from:  возраст, от
@@ -217,7 +217,7 @@ class VkUser():
         :type status: int
 
         :param  count: количество возвращаемых пользователей.
-                По умолчанию равно 1000, максимальное значение 1000.
+                По умолчанию равно 500, максимальное значение 1000.
         :type count: int
 
         :return: response: результат запроса

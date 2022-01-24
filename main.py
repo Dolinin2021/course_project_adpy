@@ -1,9 +1,10 @@
 import json
 from vk_api.longpoll import VkEventType
-from vk_class import VkUser
-from vk_bot import VkBot
-from res_process import response_processing
-from req_process import request_processing
+from classes.db_orm import session
+from classes.vk_class import VkUser
+from classes.vk_bot import VkBot
+from functions.res_process import response_processing
+from functions.req_process import request_processing
 
 
 if __name__ == '__main__':
@@ -35,3 +36,4 @@ if __name__ == '__main__':
 
                     if response:
                         result = response_processing(response, vk_client, bot, event.user_id)
+                        session.close()

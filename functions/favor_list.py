@@ -1,5 +1,5 @@
-from db_orm import favorite_list
-from vk_bot import VkBot
+from classes.db_orm import favorite_list
+from classes.vk_bot import VkBot
 
 
 def favorite_of_list(vk_user_class_obj, vk_bot_class_obj, user_id):

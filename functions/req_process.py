@@ -49,13 +49,13 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     6 — в активном поиске,
     7 — влюблен(-а),
     8 — в гражданском браке.
-    
+
     Для того, чтобы корректно работал поиск пользователей по заданным параметрам, необходимо ввести все параметры.
-    
+
     Введите команду 'Поиск' для выполнения запроса по заданным параметрам.
-    
+
     Введите команду 'Избранное', чтобы увидеть список понравившихся пользователей.
-    
+
     Введите команду 'Выход', чтобы выйти из программы.
     """
 
@@ -74,7 +74,6 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
     country_list = re.search(pattern_country, request, re.I)
     hometown_list = re.search(pattern_hometown, request, re.I)
     status_list = re.search(pattern_status, request, re.I)
-
 
     if request == "Запуск":
         vk_bot_class_obj.write_msg(user_id, "Вас приветствует чат-бот VKinder! \n"
@@ -113,8 +112,9 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                 search = vk_user_class_obj.users_get(vk_user_class_obj.user_ids)
                 if search:
                     for name in search:
-                        vk_bot_class_obj.write_msg(user_id, f"{name['first_name']}, индентификатор пользователя задан корректно, теперь введите слово 'Справка', "
-                                                            f"чтобы вывелось окно с инструкцией по использованию программы. ")
+                        vk_bot_class_obj.write_msg(user_id,
+                                                   f"{name['first_name']}, индентификатор пользователя задан корректно, теперь введите слово 'Справка', "
+                                                   f"чтобы вывелось окно с инструкцией по использованию программы. ")
                 else:
                     vk_bot_class_obj.write_msg(user_id, "Ничего не найдено, попробуйте ещё раз.")
             except vk_api.exceptions.ApiError:
@@ -134,7 +134,8 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                                 "1 — женский пол, \n"
                                                 "2 — мужской пол.")
         else:
-            vk_bot_class_obj.write_msg(user_id, "Ошибка: следует ввводить возраст в промежутке от 18 до 80 лет включительно. Попробуйте ещё раз.")
+            vk_bot_class_obj.write_msg(user_id,
+                                       "Ошибка: следует ввводить возраст в промежутке от 18 до 80 лет включительно. Попробуйте ещё раз.")
 
     elif sex_list:
         pattern_int_sex = r"\d+"
@@ -147,7 +148,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                                 "При неправильно введённом значении поиск не сработает.")
         else:
             vk_bot_class_obj.write_msg(user_id,
-                                 "Ошибка: следует ввводить пол в промежутке от 0 до 2 включительно. Попробуйте ещё раз. \n")
+                                       "Ошибка: следует ввводить пол в промежутке от 0 до 2 включительно. Попробуйте ещё раз. \n")
 
     elif country_list:
         pattern_name_country = r"[^Страна:\s]\D+"
@@ -163,10 +164,10 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                     for key, value in data.items():
                         if country_name[0] in key:
                             vk_user_class_obj.country_id = value
-                            # print(vk_user_class_obj.country_id)
-                            vk_bot_class_obj.write_msg(user_id, "Страна задана верно. теперь введите название города. \n"
-                                                                "Шаблон: Город: <название города> \n"
-                                                                "При неправильно введённом значении поиск ничего не найдёт.")
+                            vk_bot_class_obj.write_msg(user_id,
+                                                       "Страна задана верно. теперь введите название города. \n"
+                                                       "Шаблон: Город: <название города> \n"
+                                                       "При неправильно введённом значении поиск ничего не найдёт.")
             except TypeError:
                 vk_bot_class_obj.write_msg(user_id, "Страна не найдена. Попробуйте ещё раз")
 
@@ -196,7 +197,7 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
                                                 "теперь введите команду 'Поиск'.")
         else:
             vk_bot_class_obj.write_msg(user_id,
-                                 "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз.")
+                                       "Ошибка: следует ввводить семейное положение в промежутке от 1 до 8 включительно. Попробуйте ещё раз.")
 
     elif request == "Поиск":
         if vk_user_class_obj.age_from and vk_user_class_obj.age_do and vk_user_class_obj.sex and \
@@ -204,8 +205,11 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
 
             vk_bot_class_obj.write_msg(user_id, "Все параметры заданы верно.")
 
-            response = vk_user_class_obj.users_search(vk_user_class_obj.age_from, vk_user_class_obj.age_do, vk_user_class_obj.sex,
-                                                      vk_user_class_obj.country_id, vk_user_class_obj.hometown,
+            response = vk_user_class_obj.users_search(vk_user_class_obj.age_from,
+                                                      vk_user_class_obj.age_do,
+                                                      vk_user_class_obj.sex,
+                                                      vk_user_class_obj.country_id,
+                                                      vk_user_class_obj.hometown,
                                                       vk_user_class_obj.status)
 
             vk_bot_class_obj.write_msg(user_id, f"По Вашему запросу найдено {response['count']} пользователей. \n")
@@ -217,7 +221,8 @@ def request_processing(request, vk_user_class_obj, vk_bot_class_obj, user_id):
             return response
 
         else:
-            vk_bot_class_obj.write_msg(user_id, "Ошибка: недостаточно параметров для поиска. Проверьте ввдённые параметры и попробуйте ещё раз.")
+            vk_bot_class_obj.write_msg(user_id,
+                                       "Ошибка: недостаточно параметров для поиска. Проверьте ввдённые параметры и попробуйте ещё раз.")
 
     else:
         vk_bot_class_obj.write_msg(user_id, "Неправильный ввод команды. Попробуйте ещё раз.")

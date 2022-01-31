@@ -73,6 +73,6 @@
 
 ## Скриншоты:
 
-![](screen.png)
+![screen](https://user-images.githubusercontent.com/89892788/151781655-ae47ca5a-d59e-4d0a-b6c6-7941474468f0.png)
 
-![](screen_2.png)
+![screen_2](https://user-images.githubusercontent.com/89892788/151781861-e71eb3a5-04d4-40e8-8af0-5f4a731718f6.png)

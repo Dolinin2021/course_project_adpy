@@ -1,13 +1,12 @@
 import sqlalchemy as sq
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import URL
+from settings import DATABASE
 
-
-with open('dsn.txt', 'r', encoding='utf-8') as file_obj:
-    DSN = file_obj.read().strip()
 
 Base = declarative_base()
-engine = sq.create_engine(DSN)
+engine = sq.create_engine(URL(**DATABASE))
 Session = sessionmaker(bind=engine)
 session = Session()
 

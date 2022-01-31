@@ -5,18 +5,10 @@ from classes.vk_class import VkUser
 from classes.vk_bot import VkBot
 from functions.res_process import response_processing
 from functions.req_process import request_processing
+from settings import login, vk_token_personal, vk_token_community
 
 
 if __name__ == '__main__':
-
-    with open('vk_token_personal.txt', 'r', encoding='utf-8') as file_obj:
-        vk_token_personal = file_obj.read().strip()
-
-    with open('vk_token_com.txt', 'r', encoding='utf-8') as vk_file:
-        vk_token_community = vk_file.read().strip()
-
-    with open('vk_login.txt', 'r', encoding='utf-8') as file_obj:
-        login = file_obj.read().strip()
 
     vk_client = VkUser(login, vk_token_personal)
     bot = VkBot(login, vk_token_community)

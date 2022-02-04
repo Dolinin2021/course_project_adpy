@@ -77,6 +77,8 @@
 Введите команду `Выход`, чтобы выйти из программы.
 
 ## Скриншоты
+**Результат запроса пользователя:**
 ![screen](https://user-images.githubusercontent.com/89892788/151781655-ae47ca5a-d59e-4d0a-b6c6-7941474468f0.png)
 
+**Список «Избранное»**
 ![screen_2](https://user-images.githubusercontent.com/89892788/151815629-caf47ff5-e782-4501-a80a-179b0df3d3d8.png)
